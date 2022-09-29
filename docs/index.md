@@ -1,5 +1,5 @@
 ---
-title: 轻量级组件库
+title: 组件库
 full: true
 gapless: true
 ---
