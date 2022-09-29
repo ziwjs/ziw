@@ -3,11 +3,11 @@ import style from './docs/siteIndexStyle';
 export default defineConfig({
   title: 'ziw',
   favicon:
-    'https://user-images.githubusercontent.com/9554297/83762004-a0761b00-a6a9-11ea-83b4-9c8ff721d4b8.png',
-  logo: 'https://user-images.githubusercontent.com/9554297/83762004-a0761b00-a6a9-11ea-83b4-9c8ff721d4b8.png',
+    'https://www.logosc.cn/uploads/icon/2018/05/29//9bc0c657-8248-45f0-b17b-039b6eb6d1b3.png',
+  logo: 'https://www.logosc.cn/uploads/icon/2018/05/29//9bc0c657-8248-45f0-b17b-039b6eb6d1b3.png',
   outputPath: 'docs-dist',
   publicPath: '/ziw/',
-  base: '/ziw/',
+  base: '/',
   mode: 'site',
   history: {
     type: 'hash',
@@ -26,7 +26,7 @@ export default defineConfig({
     null,
     {
       title: 'GitHub',
-      path: 'https://github.com/',
+      path: 'https://github.com/ziwjs/ziw',
     },
   ],
   // more config: https://d.umijs.org/config
