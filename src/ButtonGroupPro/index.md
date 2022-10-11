@@ -77,7 +77,6 @@ export default () => (
       { label: '按钮' },
       { label: '按钮', type: 'primary' },
       { label: '按钮', type: 'primary', danger: true },
-      { label: '按钮', type: 'dashed' },
     ]}
   />
 );
