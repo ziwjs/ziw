@@ -30,7 +30,7 @@ export default function Index() {
         <div className={styles.header}>
           <div className={styles.headerLeft}>
             <h1 className={styles.title}>Ziw</h1>
-            <p className={styles.description}>体验轻量级React Web开发体验</p>
+            <p className={styles.description}>体验极速&nbsp;&nbsp;React Web&nbsp;&nbsp;开发体验</p>
             <p className={styles.buttons}>
               <a href="ziw/#/components/foo">组件</a>
               <a href="https://github.com/ziwjs/ziw">在GitHub上查看</a>

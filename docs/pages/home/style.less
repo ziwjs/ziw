@@ -1,6 +1,6 @@
 .homePage {
-  max-width: 1200px;
   min-width: 350px;
+  max-width: 1200px;
   margin: 0 auto;
   overflow: hidden;
   a {
@@ -9,7 +9,7 @@
   .main {
     box-sizing: content-box;
     margin: 0 auto;
-    padding: 24px 48px 0;
+    padding: 96px 48px 0;
     .header {
       display: flex;
       flex-direction: row;
@@ -216,6 +216,9 @@
       ul.features {
         li {
           width: 50%;
+          p:nth-child(2) {
+            margin-top: 15px;
+          }
         }
       }
     }
@@ -225,6 +228,7 @@
 @media (max-width: 768px) {
   .homePage {
     .main {
+      padding: 48px 48px 0;
       .header {
         flex-flow: column;
         .headerLeft {
