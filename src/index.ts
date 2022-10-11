@@ -1,2 +1,2 @@
-export { default as Foo } from './Foo';
-export { default as Foos } from './Foos';
+export { default as ButtonGroupPro } from './ButtonGroupPro/index';
+export type { ButtonGroupProProps } from './ButtonGroupPro/index';
