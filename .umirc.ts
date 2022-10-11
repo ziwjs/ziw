@@ -29,5 +29,16 @@ export default defineConfig({
       path: 'https://github.com/ziwjs/ziw',
     },
   ],
+  // 按需引入 antd css 样式
+  extraBabelPlugins: [
+    [
+      'import',
+      {
+        libraryName: 'antd',
+        libraryDirectory: 'es',
+        style: 'css',
+      },
+    ],
+  ],
   // more config: https://d.umijs.org/config
 });
