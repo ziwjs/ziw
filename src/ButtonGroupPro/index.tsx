@@ -17,7 +17,7 @@ export interface ButtonGroupProProps {
   }[];
 }
 const Index = (props: ButtonGroupProProps) => {
-  const { button, size = 24, split = null, direction = 'horizontal', wrap = false } = props;
+  const { button, size = 24, split = null, direction = 'horizontal', wrap = true } = props;
   return (
     <Space size={size} split={split} direction={direction} wrap={wrap}>
       {Array.isArray(button) && (

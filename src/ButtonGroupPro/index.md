@@ -90,5 +90,5 @@ export default () => (
 | size      | 间距大小                             | `number`                   | 24         |
 | split     | 设置拆分                             | `ReactNode`                |            |
 | direction | 间距方向                             | `vertical` \| `horizontal` | horizontal |
-| wrap      | 是否自动换行，仅在 horizontal 时有效 | `boolean`                  | false      |
+| wrap      | 是否自动换行，仅在 horizontal 时有效 | `boolean`                  | true       |
 | button    | 按钮组                               | `Array`                    |            |
