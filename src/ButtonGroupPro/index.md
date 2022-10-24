@@ -5,7 +5,6 @@ nav:
   path: /components
 group:
   title: 通用
-mobile: false
 ---
 
 ## ButtonGroupPro
