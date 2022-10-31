@@ -12,9 +12,10 @@ group:
 ## 基本用法
 
 ```tsx
-import React, { Fragment, useRef } from 'react';
+import React, { Fragment, useRef, useState } from 'react';
 import { FormPro, ButtonGroupPro } from 'ziw';
 export default () => {
+  const [formData, setFormData] = useState({});
   const formRef = useRef();
   return (
     <Fragment>
@@ -50,7 +51,6 @@ export default () => {
           { key: 'TextArea', label: 'TextArea', type: 'TextArea' },
           { key: 'DatePicker', label: 'DatePicker', type: 'DatePicker' },
           { key: 'RangePicker', label: 'RangePicker', type: 'RangePicker' },
-          { key: 'Switch', label: 'Switch', type: 'Switch' },
           { key: 'Checkbox', label: 'Checkbox', type: 'Checkbox' },
           {
             key: 'CheckboxGroup',
@@ -72,6 +72,7 @@ export default () => {
             ],
           },
           { key: 'Rate', label: 'Rate', type: 'Rate' },
+          { key: 'Switch', label: 'Switch', type: 'Switch' },
         ]}
       />
       <ButtonGroupPro
@@ -80,13 +81,24 @@ export default () => {
             label: '获取表单',
             type: 'primary',
             onClick: async () => {
+              /* 
+              通过使用 getFormValue() api 获取表单值
+              当然，你也可以通过使用 antd Form 提供的 api 获取
+              */
               const data = await formRef.current.getFormValue();
-              console.log('data', data);
+              setFormData(data);
             },
           },
-          { label: '重置表单', onClick: () => formRef.current.resetFields() },
+          {
+            label: '重置表单',
+            onClick: () => {
+              formRef.current.resetFields();
+              setFormData({});
+            },
+          },
         ]}
       />
+      <div>{JSON.stringify(formData)}</div>
     </Fragment>
   );
 };

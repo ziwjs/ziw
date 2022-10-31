@@ -38,13 +38,14 @@ export interface FormProProps {
     key: string;
     rules: Rule[];
   }[];
+  span?: number;
 }
 const Index = forwardRef((props: FormProProps, ref) => {
   const { TextArea } = Input;
   const RadioGroup = Radio.Group;
   const { RangePicker } = DatePicker;
   const CheckboxGroup = Checkbox.Group;
-  const { dataSource = [] } = props;
+  const { dataSource = [], span = 6 } = props;
 
   useImperativeHandle(ref, () => ({
     ...(ref?.current || {}),
@@ -59,7 +60,7 @@ const Index = forwardRef((props: FormProProps, ref) => {
       Checkbox: <Checkbox {...props} />,
       CheckboxGroup: <CheckboxGroup {...props} />,
       DatePicker: <DatePicker style={style} {...props} />,
-      RangePicker: <RangePicker {...props} />,
+      RangePicker: <RangePicker style={style} {...props} />,
       InputNumber: <InputNumber style={style} {...props} />,
       TextArea: <TextArea rows={1} {...props} />,
       Radio: <Radio {...props} />,
@@ -69,7 +70,7 @@ const Index = forwardRef((props: FormProProps, ref) => {
       Rate: <Rate {...props} />,
       TimePicker: <TimePicker style={style} {...props} />,
     };
-    return caseType[type] || <Input />;
+    return caseType[type] || <Input {...props} />;
   };
 
   // 表单渲染
@@ -78,7 +79,7 @@ const Index = forwardRef((props: FormProProps, ref) => {
     if (Array.isArray(dataSource)) {
       dataSource.forEach(({ type, key, rules, label, ...other }) => {
         return children.push(
-          <Col xl={6} lg={8} md={12} sm={24} xs={24} key={key}>
+          <Col xl={typeof span === 'number' ? span : 6} lg={8} md={12} sm={24} xs={24} key={key}>
             <Form.Item name={key} label={label || ' '} rules={rules}>
               {caseType(type, other)}
             </Form.Item>
