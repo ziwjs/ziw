@@ -41,10 +41,11 @@ export default () => {
     <Fragment>
       <FormPro
         ref={formRef}
-        dataSource={[
+        initialValues={{ Input: '111' }}
+        columns={[
           { key: 'Input', label: 'Input', placeholder: 'placeholder' },
           { key: 'InputNumber', label: 'InputNumber', type: 'InputNumber' },
-          { key: 'Select', label: 'Select', type: 'Select', options },
+          { key: 'Select', label: 'Select', type: 'Select', options, allowClear: true },
           { key: 'Cascader', label: 'Cascader', type: 'Cascader', options: cascaderOptions },
           { key: 'TimePicker', label: 'TimePicker', type: 'TimePicker' },
           { key: 'TextArea', label: 'TextArea', type: 'TextArea' },
@@ -73,6 +74,15 @@ export default () => {
               },
             },
             {
+              label: '修改表单',
+              onClick: () =>
+                /* 
+              通过使用 setFieldsValue() api 修改表单值
+              当然，你也可以通过使用 antd Form 提供的 api 修改
+              */
+                formRef.current.setFormValue({ InputNumber: 2, Select: 'Apple', Switch: true }),
+            },
+            {
               label: '重置表单',
               onClick: () => {
                 setFormData({});
@@ -88,3 +98,15 @@ export default () => {
   );
 };
 ```
+
+## API
+
+| 参数    | 说明                           | 类型                   | 默认值 |
+| ------- | ------------------------------ | ---------------------- | ------ |
+| type    | 设置表单类型                   | `searchForm` \| `form` | `form` |
+| columns | 表格列的配置描述，具体项见下表 | `ColumnsType[]`        | -      |
+
+## Column
+
+| 参数 | 说明 | 类型 | 默认值 |
+| ---- | ---- | ---- | ------ |

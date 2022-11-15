@@ -17,14 +17,16 @@ import {
 } from 'antd';
 import type { Rule } from 'antd/es/form';
 import { DownOutlined, UpOutlined, ReloadOutlined, ZoomInOutlined } from '@ant-design/icons';
-import { asyncAwaitForms } from './utils';
+import { asyncAwaitForms, _setFormValue } from './utils';
 import styles from './index.less';
-import React, { forwardRef, useImperativeHandle, useState, Fragment } from 'react';
+import React, { forwardRef, useImperativeHandle, useState, Fragment, useEffect } from 'react';
 export interface FormProProps {
   /*
-  dataSource: 表单组
+  columns: 表单组
+  type: 表单类型
+  initialValues: 表单默认值
   */
-  dataSource?: {
+  columns?: {
     type?:
       | 'Checkbox'
       | 'CheckboxGroup'
@@ -44,6 +46,7 @@ export interface FormProProps {
     span: number;
   }[];
   type?: 'searchForm' | 'form';
+  initialValues: object;
 }
 const Index = forwardRef((props: FormProProps, ref) => {
   // 搜索表单控制是否展开
@@ -55,11 +58,12 @@ const Index = forwardRef((props: FormProProps, ref) => {
   const CheckboxGroup = Checkbox.Group;
 
   // 父组件传递过来的参数
-  const { dataSource = [], type = 'form' } = props;
+  const { columns = [], type = 'form', initialValues = {} } = props;
 
   useImperativeHandle(ref, () => ({
     ...(ref?.current || {}),
     getFormValue: async () => await asyncAwaitForms(ref?.current),
+    setFormValue: (target = {}) => _setFormValue(ref?.current, target),
   }));
 
   // 判断 type 类型
@@ -93,24 +97,23 @@ const Index = forwardRef((props: FormProProps, ref) => {
       sm: 24,
       xs: 24,
     };
-    if (Array.isArray(dataSource)) {
-      dataSource.forEach(({ type: _type, key, rules, label = ' ', span = 6, ...other }, index) => {
+    Array.isArray(columns) &&
+      columns.forEach(({ type: _type, key, rules, label = ' ', span = 6, ...other }, index) => {
         const payload = { name: key, label, rules };
+        if (_type === 'Switch') payload.valuePropName = 'checked';
         return children.push(
           <Col
             {...colItemLayout}
             xl={type === 'form' ? span : expand ? span : index <= 7 ? span : 0}
             key={key}
           >
-            <Form.Item {...payload} valuePropName="checked">
-              {caseType(_type, other)}
-            </Form.Item>
+            <Form.Item {...payload}>{caseType(_type, other)}</Form.Item>
           </Col>,
         );
       });
-    }
-    // 查询模式最后一列显示
-    type === 'searchForm' &&
+    // 查询模式添加一列显示
+    Array.isArray(columns) &&
+      type === 'searchForm' &&
       children.push(
         <Col {...colItemLayout} key="query" className={styles.centerBox}>
           <Button type="primary">
@@ -137,7 +140,7 @@ const Index = forwardRef((props: FormProProps, ref) => {
   };
 
   return (
-    <Form layout="vertical" ref={ref}>
+    <Form layout="vertical" ref={ref} initialValues={initialValues}>
       <Row gutter={{ sm: 24 }}>{getFields()}</Row>
     </Form>
   );

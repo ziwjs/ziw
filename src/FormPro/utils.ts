@@ -14,3 +14,6 @@ export const asyncAwaitForms = async (form) => {
     false
   );
 };
+// 设置表单数据的值
+export const _setFormValue = (form, target) =>
+  form && form.setFieldsValue && form.setFieldsValue({ ...target });
