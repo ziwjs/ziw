@@ -16,89 +16,74 @@ import React, { Fragment, useRef, useState } from 'react';
 import { FormPro, ButtonGroupPro } from 'ziw';
 export default () => {
   const [formData, setFormData] = useState({});
+
   const formRef = useRef();
+
+  const options = [
+    { label: 'Apple', value: 'Apple' },
+    { label: 'Pear', value: 'Pear' },
+  ];
+
+  const cascaderOptions = [
+    {
+      value: 'jiangsu',
+      label: 'Jiangsu',
+      children: [
+        {
+          value: 'nanjing',
+          label: 'Nanjing',
+        },
+      ],
+    },
+  ];
+
   return (
     <Fragment>
       <FormPro
         ref={formRef}
         dataSource={[
-          { key: 'Input', label: 'Input' },
+          { key: 'Input', label: 'Input', placeholder: 'placeholder' },
           { key: 'InputNumber', label: 'InputNumber', type: 'InputNumber' },
-          {
-            key: 'Select',
-            label: 'Select',
-            type: 'Select',
-            options: [{ label: 'Apple', value: 'Apple' }],
-          },
-          {
-            key: 'Cascader',
-            label: 'Cascader',
-            type: 'Cascader',
-            options: [
-              {
-                value: 'jiangsu',
-                label: 'Jiangsu',
-                children: [
-                  {
-                    value: 'nanjing',
-                    label: 'Nanjing',
-                  },
-                ],
-              },
-            ],
-          },
+          { key: 'Select', label: 'Select', type: 'Select', options },
+          { key: 'Cascader', label: 'Cascader', type: 'Cascader', options: cascaderOptions },
           { key: 'TimePicker', label: 'TimePicker', type: 'TimePicker' },
           { key: 'TextArea', label: 'TextArea', type: 'TextArea' },
           { key: 'DatePicker', label: 'DatePicker', type: 'DatePicker' },
           { key: 'RangePicker', label: 'RangePicker', type: 'RangePicker' },
-          { key: 'Checkbox', label: 'Checkbox', type: 'Checkbox' },
-          {
-            key: 'CheckboxGroup',
-            label: 'CheckboxGroup',
-            type: 'CheckboxGroup',
-            options: [
-              { label: 'Apple', value: 'Apple' },
-              { label: 'Pear', value: 'Pear' },
-            ],
-          },
-          { key: 'Radio', label: 'Radio', type: 'Radio' },
-          {
-            key: 'RadioGroup',
-            label: 'RadioGroup',
-            type: 'RadioGroup',
-            options: [
-              { label: 'Apple', value: 'Apple' },
-              { label: 'Pear', value: 'Pear' },
-            ],
-          },
-          { key: 'Rate', label: 'Rate', type: 'Rate' },
+          { key: 'CheckboxGroup', label: 'CheckboxGroup', type: 'CheckboxGroup', options },
+          { key: 'RadioGroup', label: 'RadioGroup', type: 'RadioGroup', options },
           { key: 'Switch', label: 'Switch', type: 'Switch' },
+          { key: 'Slider', label: 'Slider', type: 'Slider' },
+          { key: 'Rate', label: 'Rate', type: 'Rate' },
         ]}
       />
-      <ButtonGroupPro
-        button={[
-          {
-            label: '获取表单',
-            type: 'primary',
-            onClick: async () => {
-              /* 
+      <div style={{ margin: '24px 0' }}>
+        <ButtonGroupPro
+          button={[
+            {
+              label: '获取表单',
+              type: 'primary',
+              onClick: async () => {
+                /* 
               通过使用 getFormValue() api 获取表单值
               当然，你也可以通过使用 antd Form 提供的 api 获取
               */
-              const data = await formRef.current.getFormValue();
-              setFormData(data);
+                const data = await formRef.current.getFormValue();
+                setFormData(data);
+              },
             },
-          },
-          {
-            label: '重置表单',
-            onClick: () => {
-              formRef.current.resetFields();
-              setFormData({});
+            {
+              label: '重置表单',
+              onClick: () => {
+                setFormData({});
+                formRef.current.resetFields();
+              },
             },
-          },
-        ]}
-      />
-      <div>{JSON.stringify(formData)}</div>
+          ]}
+        />
+      </div>
+
+      {JSON.stringify(formData) !== '{}' && <div>{JSON.stringify(formData)}</div>}
     </Fragment>
   );
 };
