@@ -19,12 +19,14 @@ import type { Rule } from 'antd/es/form';
 import { DownOutlined, UpOutlined, ReloadOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { asyncAwaitForms, _setFormValue } from './utils';
 import styles from './index.less';
-import React, { forwardRef, useImperativeHandle, useState, Fragment, useEffect } from 'react';
+import React, { forwardRef, useImperativeHandle, useState, Fragment } from 'react';
 export interface FormProProps {
   /*
   columns: 表单组
   type: 表单类型
   initialValues: 表单默认值
+  onSearch: 查询
+  onReset: 重置
   */
   columns?: {
     type?:
@@ -47,6 +49,8 @@ export interface FormProProps {
   }[];
   type?: 'searchForm' | 'form';
   initialValues: object;
+  onSearch: (data: any) => void;
+  onReset: () => void;
 }
 const Index = forwardRef((props: FormProProps, ref) => {
   // 搜索表单控制是否展开
@@ -57,8 +61,8 @@ const Index = forwardRef((props: FormProProps, ref) => {
   const { RangePicker } = DatePicker;
   const CheckboxGroup = Checkbox.Group;
 
-  // 父组件传递过来的参数
-  const { columns = [], type = 'form', initialValues = {} } = props;
+  // 父组件传递参数
+  const { columns = [], type = 'form', initialValues = {}, onSearch, onReset } = props;
 
   useImperativeHandle(ref, () => ({
     ...(ref?.current || {}),
@@ -86,6 +90,18 @@ const Index = forwardRef((props: FormProProps, ref) => {
     return caseType[type] || <Input {...props} />;
   };
 
+  // 查询按钮事件
+  const search = async () => {
+    const data = await asyncAwaitForms(ref?.current);
+    if (!data) return;
+    onSearch && onSearch(data);
+  };
+  // 重置按钮事件
+  const reset = () => {
+    onReset && onReset();
+    ref?.current?.resetFields();
+  };
+
   // 表单渲染
   const getFields = () => {
     const children: any[] = [];
@@ -97,14 +113,16 @@ const Index = forwardRef((props: FormProProps, ref) => {
       sm: 24,
       xs: 24,
     };
-    Array.isArray(columns) &&
-      columns.forEach(({ type: _type, key, rules, label = ' ', span = 6, ...other }, index) => {
+    const _columns = typeof columns === 'function' ? columns() : columns;
+    Array.isArray(_columns) &&
+      _columns.forEach(({ type: _type, key, rules, label = ' ', span = 6, ...other }, index) => {
         const payload = { name: key, label, rules };
+        // 解决控制 [antd: Switch] `value` is not a valid prop, do you mean `checked`? 错误
         if (_type === 'Switch') payload.valuePropName = 'checked';
         return children.push(
           <Col
             {...colItemLayout}
-            xl={type === 'form' ? span : expand ? span : index <= 7 ? span : 0}
+            xl={type === 'form' ? span : expand ? span : index <= 6 ? span : 0}
             key={key}
           >
             <Form.Item {...payload}>{caseType(_type, other)}</Form.Item>
@@ -112,28 +130,30 @@ const Index = forwardRef((props: FormProProps, ref) => {
         );
       });
     // 查询模式添加一列显示
-    Array.isArray(columns) &&
+    Array.isArray(_columns) &&
       type === 'searchForm' &&
       children.push(
         <Col {...colItemLayout} key="query" className={styles.centerBox}>
-          <Button type="primary">
+          <Button type="primary" onClick={search}>
             <ZoomInOutlined /> 查询
           </Button>
-          <Button style={{ margin: '0 8px' }}>
+          <Button style={{ margin: '0 8px' }} onClick={reset}>
             <ReloadOutlined /> 重置
           </Button>
-          <a onClick={() => setExpand(!expand)}>
-            {expand ? (
-              <Fragment>
-                <UpOutlined />
-                关闭
-              </Fragment>
-            ) : (
-              <Fragment>
-                <DownOutlined /> 展开
-              </Fragment>
-            )}
-          </a>
+          {_columns.length >= 8 && (
+            <a onClick={() => setExpand(!expand)}>
+              {expand ? (
+                <Fragment>
+                  <UpOutlined />
+                  关闭
+                </Fragment>
+              ) : (
+                <Fragment>
+                  <DownOutlined /> 展开
+                </Fragment>
+              )}
+            </a>
+          )}
         </Col>,
       );
     return children;
