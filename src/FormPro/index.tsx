@@ -98,8 +98,8 @@ const Index = forwardRef((props: FormProProps, ref) => {
   };
   // 重置按钮事件
   const reset = () => {
+    typeof ref?.current?.resetFields === 'function' && ref?.current?.resetFields();
     onReset && onReset();
-    ref?.current?.resetFields();
   };
 
   // 表单渲染

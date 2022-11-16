@@ -168,13 +168,22 @@ export default () => {
 
 ## API
 
-| 参数          | 说明                                 | 类型                   | 默认值 |
-| ------------- | ------------------------------------ | ---------------------- | ------ |
-| type          | 设置表单类型                         | `searchForm` \| `form` | `form` |
-| columns       | 表格列的配置描述，具体项见下表       | `ColumnsType[]`        | -      |
-| initialValues | 表单默认值，只有初始化以及重置时生效 | `object`               | -      |
-| onSearch      | 仅在 `type = searchForm` 时生效      |                        | -      |
+| 参数          | 说明                                     | 类型                   | 默认值 |
+| ------------- | ---------------------------------------- | ---------------------- | ------ |
+| type          | 设置表单类型                             | `searchForm` \| `form` | `form` |
+| columns       | 表格列的配置描述，具体项见下表           | `ColumnsType[]`        | -      |
+| initialValues | 表单默认值，只有初始化以及重置时生效     | `object`               | -      |
+| onSearch      | 仅在 `type = searchForm` 时生效 查询事件 |                        | -      |
+| onReset       | 仅在 `type = searchForm` 时生效 重置事件 |                        | -      |
 
 ## Column
 
-列描述数据对象，是 columns 中的一项，Column 使用相同的 API。 | 参数 | 说明 | 类型 | 默认值 | | ----- | ----------------------------------------- | ------ | ------ | | key | 设置了唯一的 key | string | - | | type | 设置控件类型 | - | Input | | label | `label` 标签的文本 | string | - | | span | 栅格占位格数，为 0 时相当于 display: none | number | 6 | | rules | 校验规则，设置字段的校验逻辑 | Rule[] | - |
+列描述数据对象，是 columns 中的一项，Column 使用相同的 API。
+
+| 参数          | 说明                                      | 类型            | 默认值 |
+| ------------- | ----------------------------------------- | --------------- | ------ |
+| key           | 设置了唯一的 key                          | string          | -      |
+| label         | `label` 标签的文本                        | `ColumnsType[]` | -      |
+| initialValues | 表单默认值，只有初始化以及重置时生效      | string          | -      |
+| span          | 栅格占位格数，为 0 时相当于 display: none | number          | 6      |
+| rules         | 校验规则，设置字段的校验逻辑              | Rule[]          | -      |
