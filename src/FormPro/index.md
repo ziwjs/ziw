@@ -45,6 +45,7 @@ export default () => {
         ref={formRef}
         initialValues={{ Input: '111' }}
         columns={[
+          { key: 'TextArea', label: 'TextArea', type: 'TextArea' },
           { key: 'Input', label: 'Input', placeholder: 'placeholder' },
           { key: 'InputNumber', label: 'InputNumber', type: 'InputNumber' },
           {
@@ -57,7 +58,6 @@ export default () => {
           },
           { key: 'Cascader', label: 'Cascader', type: 'Cascader', options: cascaderOptions },
           { key: 'TimePicker', label: 'TimePicker', type: 'TimePicker' },
-          { key: 'TextArea', label: 'TextArea', type: 'TextArea' },
           { key: 'DatePicker', label: 'DatePicker', type: 'DatePicker' },
           { key: 'Slider', label: 'Slider', type: 'Slider' },
           { key: 'RangePicker', label: 'RangePicker', type: 'RangePicker', span: 12 },
@@ -140,6 +140,7 @@ export default () => {
         initialValues={{ Input: '111' }}
         onSearch={(data) => setFormData(data)}
         columns={[
+          { key: 'TextArea', label: 'TextArea', type: 'TextArea' },
           { key: 'Input', label: 'Input', placeholder: 'placeholder' },
           { key: 'InputNumber', label: 'InputNumber', type: 'InputNumber' },
           {
@@ -151,13 +152,11 @@ export default () => {
             rules: [{ required: true, message: 'Please Select your Select!' }],
           },
           { key: 'TimePicker', label: 'TimePicker', type: 'TimePicker' },
-          { key: 'TextArea', label: 'TextArea', type: 'TextArea' },
           { key: 'DatePicker', label: 'DatePicker', type: 'DatePicker' },
           { key: 'Slider', label: 'Slider', type: 'Slider' },
           { key: 'CheckboxGroup', label: 'CheckboxGroup', type: 'CheckboxGroup', options },
           { key: 'RadioGroup', label: 'RadioGroup', type: 'RadioGroup', options },
           { key: 'Switch', label: 'Switch', type: 'Switch' },
-          { key: 'Rate', label: 'Rate', type: 'Rate' },
         ]}
       />
       {JSON.stringify(formData) !== '{}' && <div>{JSON.stringify(formData)}</div>}
@@ -180,10 +179,10 @@ export default () => {
 
 列描述数据对象，是 columns 中的一项，Column 使用相同的 API。
 
-| 参数          | 说明                                      | 类型            | 默认值 |
-| ------------- | ----------------------------------------- | --------------- | ------ |
-| key           | 设置了唯一的 key                          | string          | -      |
-| label         | `label` 标签的文本                        | `ColumnsType[]` | -      |
-| initialValues | 表单默认值，只有初始化以及重置时生效      | string          | -      |
-| span          | 栅格占位格数，为 0 时相当于 display: none | number          | 6      |
-| rules         | 校验规则，设置字段的校验逻辑              | Rule[]          | -      |
+| 参数  | 说明                                      | 类型            | 默认值 |
+| ----- | ----------------------------------------- | --------------- | ------ |
+| type  | 设置控件类型                              | string          | Input  |
+| key   | 设置了唯一的 key                          | string          | -      |
+| label | `label` 标签的文本                        | `ColumnsType[]` | -      |
+| span  | 栅格占位格数，为 0 时相当于 display: none | number          | 6      |
+| rules | 校验规则，设置字段的校验逻辑              | Rule[]          | -      |

@@ -49,7 +49,7 @@ export interface FormProProps {
   }[];
   type?: 'searchForm' | 'form';
   initialValues: object;
-  onSearch: (data: any) => void;
+  onSearch: () => void;
   onReset: () => void;
 }
 const Index = forwardRef((props: FormProProps, ref) => {
@@ -120,11 +120,7 @@ const Index = forwardRef((props: FormProProps, ref) => {
         // 解决控制 [antd: Switch] `value` is not a valid prop, do you mean `checked`? 错误
         if (_type === 'Switch') payload.valuePropName = 'checked';
         return children.push(
-          <Col
-            {...colItemLayout}
-            xl={type === 'form' ? span : expand ? span : index <= 6 ? span : 0}
-            key={key}
-          >
+          <Col {...colItemLayout} xl={span} key={key}>
             <Form.Item {...payload}>{caseType(_type, other)}</Form.Item>
           </Col>,
         );
@@ -137,11 +133,11 @@ const Index = forwardRef((props: FormProProps, ref) => {
           <Button type="primary" onClick={search}>
             <ZoomInOutlined /> 查询
           </Button>
-          <Button style={{ margin: '0 8px' }} onClick={reset}>
+          <Button style={{ marginLeft: 8 }} onClick={reset}>
             <ReloadOutlined /> 重置
           </Button>
-          {_columns.length >= 8 && (
-            <a onClick={() => setExpand(!expand)}>
+          {/* {_columns.length >= 8 && (
+            <a onClick={() => setExpand(!expand)} className={styles.minWidth}>
               {expand ? (
                 <Fragment>
                   <UpOutlined />
@@ -153,7 +149,7 @@ const Index = forwardRef((props: FormProProps, ref) => {
                 </Fragment>
               )}
             </a>
-          )}
+          )} */}
         </Col>,
       );
     return children;
