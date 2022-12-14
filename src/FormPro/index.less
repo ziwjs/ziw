@@ -1,3 +1,4 @@
+@zntd-text-color: #ffffff;
 .rowBox {
   display: table !important;
   width: 100%;
@@ -25,6 +26,13 @@
   :global {
     #TextArea {
       padding: 3px 11px;
+    }
+  }
+}
+html[data-prefers-color='dark'] {
+  :global {
+    .ant-form-item-label > label {
+      color: @zntd-text-color;
     }
   }
 }
