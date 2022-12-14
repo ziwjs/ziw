@@ -137,11 +137,13 @@ export default () => {
       <FormPro
         ref={formRef}
         type="searchForm"
+        displayPre={3}
         initialValues={{ Input: '111' }}
         onSearch={(data) => setFormData(data)}
+        onReset={(data) => setFormData({})}
         columns={[
-          { key: 'TextArea', label: 'TextArea', type: 'TextArea' },
-          { key: 'Input', label: 'Input', placeholder: 'placeholder' },
+          { key: 'TextArea', label: 'TextArea', type: 'TextArea', span: 12 },
+          { key: 'Input', label: 'Input', placeholder: 'placeholder', order: 1 },
           { key: 'InputNumber', label: 'InputNumber', type: 'InputNumber' },
           {
             key: 'Select',
@@ -151,12 +153,14 @@ export default () => {
             allowClear: true,
             rules: [{ required: true, message: 'Please Select your Select!' }],
           },
-          { key: 'TimePicker', label: 'TimePicker', type: 'TimePicker' },
-          { key: 'DatePicker', label: 'DatePicker', type: 'DatePicker' },
-          { key: 'Slider', label: 'Slider', type: 'Slider' },
-          { key: 'CheckboxGroup', label: 'CheckboxGroup', type: 'CheckboxGroup', options },
-          { key: 'RadioGroup', label: 'RadioGroup', type: 'RadioGroup', options },
-          { key: 'Switch', label: 'Switch', type: 'Switch' },
+          {
+            key: 'RadioGroup',
+            label: 'RadioGroup',
+            type: 'RadioGroup',
+            optionType: 'button',
+            buttonStyle: 'solid',
+            options,
+          },
         ]}
       />
       {JSON.stringify(formData) !== '{}' && <div>{JSON.stringify(formData)}</div>}
@@ -171,9 +175,10 @@ export default () => {
 | ------------- | ---------------------------------------- | ---------------------- | ------ |
 | type          | 设置表单类型                             | `searchForm` \| `form` | `form` |
 | columns       | 表格列的配置描述，具体项见下表           | `ColumnsType[]`        | -      |
+| displayPre    | 时生效 只显示前面部分查询条件            | `number`               | -      |
 | initialValues | 表单默认值，只有初始化以及重置时生效     | `object`               | -      |
-| onSearch      | 仅在 `type = searchForm` 时生效 查询事件 |                        | -      |
-| onReset       | 仅在 `type = searchForm` 时生效 重置事件 |                        | -      |
+| onSearch      | 仅在 `type = searchForm` 时生效 查询事件 | `function(data)`       | -      |
+| onReset       | 仅在 `type = searchForm` 时生效 重置事件 | `function()`           | -      |
 
 ## Column
 
@@ -185,4 +190,5 @@ export default () => {
 | key   | 设置了唯一的 key                          | string          | -      |
 | label | `label` 标签的文本                        | `ColumnsType[]` | -      |
 | span  | 栅格占位格数，为 0 时相当于 display: none | number          | 6      |
+| order | 元素的排列顺序. 数值越小，排列越靠前      | number          | 0      |
 | rules | 校验规则，设置字段的校验逻辑              | Rule[]          | -      |

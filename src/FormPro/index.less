@@ -1,11 +1,30 @@
-// 居中盒子
-.centerBox {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-left: auto !important;
-  .minWidth {
-    min-width: 48px;
-    margin-left: 8px;
+.rowBox {
+  display: table !important;
+  width: 100%;
+  margin: 0 !important;
+  .leftCol {
+    float: left;
+    width: 100%;
+    height: max-content;
+  }
+  .rightCol {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    float: right;
+    float: right;
+    width: 100%;
+    height: auto;
+    height: max-content;
+    margin-left: auto;
+    .minWidth {
+      min-width: 48px;
+      margin-left: 8px;
+    }
+  }
+  :global {
+    #TextArea {
+      padding: 3px 11px;
+    }
   }
 }

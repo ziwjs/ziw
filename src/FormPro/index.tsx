@@ -15,19 +15,15 @@ import {
   Slider,
   Button,
 } from 'antd';
-import type { Rule } from 'antd/es/form';
 import { DownOutlined, UpOutlined, ReloadOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { asyncAwaitForms, _setFormValue } from './utils';
 import styles from './index.less';
-import React, { forwardRef, useImperativeHandle, useState, Fragment } from 'react';
+import type { Rule } from 'antd/es/form';
+import React, { forwardRef, useImperativeHandle, Fragment, useState } from 'react';
 export interface FormProProps {
-  /*
-  columns: 表单组
-  type: 表单类型
-  initialValues: 表单默认值
-  onSearch: 查询
-  onReset: 重置
-  */
+  type?: 'searchForm' | 'form';
+  displayPre?: Number;
+  initialValues: object;
   columns?: {
     type?:
       | 'Checkbox'
@@ -47,22 +43,20 @@ export interface FormProProps {
     rules: Rule[];
     span: number;
   }[];
-  type?: 'searchForm' | 'form';
-  initialValues: object;
-  onSearch: () => void;
+  onSearch: (data: any) => void;
   onReset: () => void;
 }
 const Index = forwardRef((props: FormProProps, ref) => {
-  // 搜索表单控制是否展开
-  const [expand, setExpand] = useState(false);
-
   const { TextArea } = Input;
   const RadioGroup = Radio.Group;
   const { RangePicker } = DatePicker;
   const CheckboxGroup = Checkbox.Group;
 
   // 父组件传递参数
-  const { columns = [], type = 'form', initialValues = {}, onSearch, onReset } = props;
+  const { columns = [], type = 'form', initialValues = {}, onSearch, onReset, displayPre } = props;
+
+  // 搜索表单控制是否展开
+  const [expand, setExpand] = useState(false);
 
   useImperativeHandle(ref, () => ({
     ...(ref?.current || {}),
@@ -79,7 +73,7 @@ const Index = forwardRef((props: FormProProps, ref) => {
       DatePicker: <DatePicker style={style} {...props} />,
       RangePicker: <RangePicker style={style} {...props} />,
       InputNumber: <InputNumber style={style} {...props} />,
-      TextArea: <TextArea rows={1} {...props} />,
+      TextArea: <TextArea rows={5} {...props} />,
       RadioGroup: <RadioGroup {...props} />,
       Select: <Select {...props} />,
       Switch: <Switch {...props} />,
@@ -114,50 +108,72 @@ const Index = forwardRef((props: FormProProps, ref) => {
       xs: 24,
     };
     const _columns = typeof columns === 'function' ? columns() : columns;
-    Array.isArray(_columns) &&
+    // 是否显示展开 - 关闭控件
+    const isDisplayPre = typeof displayPre === 'number' && displayPre > 0;
+    if (Array.isArray(_columns)) {
+      // 进行排序，order 值越小排列越靠前
+      _columns
+        .sort(({ order }, { order: _orde }) => {
+          const a = order || 0;
+          const b = _orde || 0;
+          if (a < b) return 1;
+          return -1;
+        })
+        .reverse();
+
+      // 循环♻️遍历数组源
       _columns.forEach(({ type: _type, key, rules, label = ' ', span = 6, ...other }, index) => {
         const payload = { name: key, label, rules };
         // 解决控制 [antd: Switch] `value` is not a valid prop, do you mean `checked`? 错误
         if (_type === 'Switch') payload.valuePropName = 'checked';
         return children.push(
-          <Col {...colItemLayout} xl={span} key={key}>
+          <Col
+            {...colItemLayout}
+            xl={isDisplayPre && displayPre <= index && !expand ? 0 : span}
+            key={key}
+            className={styles.leftCol}
+          >
             <Form.Item {...payload}>{caseType(_type, other)}</Form.Item>
           </Col>,
         );
       });
-    // 查询模式添加一列显示
-    Array.isArray(_columns) &&
+      // 查询模式添加一列显示
       type === 'searchForm' &&
-      children.push(
-        <Col {...colItemLayout} key="query" className={styles.centerBox}>
-          <Button type="primary" onClick={search}>
-            <ZoomInOutlined /> 查询
-          </Button>
-          <Button style={{ marginLeft: 8 }} onClick={reset}>
-            <ReloadOutlined /> 重置
-          </Button>
-          {/* {_columns.length >= 8 && (
-            <a onClick={() => setExpand(!expand)} className={styles.minWidth}>
-              {expand ? (
-                <Fragment>
-                  <UpOutlined />
-                  关闭
-                </Fragment>
-              ) : (
-                <Fragment>
-                  <DownOutlined /> 展开
-                </Fragment>
+        children.push(
+          <Col {...colItemLayout} key="query" className={styles.rightCol}>
+            <Form.Item label=" ">
+              <Button type="primary" onClick={search}>
+                <ZoomInOutlined /> 查询
+              </Button>
+              <Button style={{ marginLeft: 8 }} onClick={reset}>
+                <ReloadOutlined /> 重置
+              </Button>
+              {isDisplayPre && displayPre < _columns.length && (
+                <a onClick={() => setExpand(!expand)} className={styles.minWidth}>
+                  {expand ? (
+                    <Fragment>
+                      <UpOutlined />
+                      关闭
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      <DownOutlined /> 展开
+                    </Fragment>
+                  )}
+                </a>
               )}
-            </a>
-          )} */}
-        </Col>,
-      );
+            </Form.Item>
+          </Col>,
+        );
+    }
     return children;
   };
 
   return (
     <Form layout="vertical" ref={ref} initialValues={initialValues}>
-      <Row gutter={{ sm: 24 }}>{getFields()}</Row>
+      <Row gutter={{ sm: 24 }} className={styles.rowBox}>
+        {getFields()}
+      </Row>
     </Form>
   );
 });
