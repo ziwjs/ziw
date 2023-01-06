@@ -136,7 +136,7 @@ export default () => {
         type="searchForm"
         displayPre={3}
         initialValues={{ Input: '111' }}
-        onSearch={(data) => setFormData(data)}
+        onSubmit={(data) => setFormData(data)}
         onReset={(data) => setFormData({})}
         columns={[
           { key: 'TextArea', label: 'TextArea', type: 'TextArea', span: 12 },
@@ -149,14 +149,6 @@ export default () => {
             options,
             allowClear: true,
             rules: [{ required: true, message: 'Please Select your Select!' }],
-          },
-          {
-            key: 'RadioGroup',
-            label: 'RadioGroup',
-            type: 'RadioGroup',
-            optionType: 'button',
-            buttonStyle: 'solid',
-            options,
           },
         ]}
       />
@@ -174,7 +166,7 @@ export default () => {
 | columns       | 表格列的配置描述，具体项见下表           | `ColumnsType[]`        | -      |
 | displayPre    | 只显示前面部分查询条件                   | `number`               | -      |
 | initialValues | 表单默认值，只有初始化以及重置时生效     | `object`               | -      |
-| onSearch      | 仅在 `type = searchForm` 时生效 查询事件 | `function(data)`       | -      |
+| onSubmit      | 仅在 `type = searchForm` 时生效 查询事件 | `function(data)`       | -      |
 | onReset       | 仅在 `type = searchForm` 时生效 重置事件 | `function()`           | -      |
 
 ## Column

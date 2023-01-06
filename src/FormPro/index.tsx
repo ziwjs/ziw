@@ -43,7 +43,7 @@ export interface FormProProps {
     rules: Rule[];
     span: number;
   }[];
-  onSearch: (data: any) => void;
+  onSubmit: (data: any) => void;
   onReset: () => void;
 }
 const Index = forwardRef((props: FormProProps, ref) => {
@@ -54,7 +54,7 @@ const Index = forwardRef((props: FormProProps, ref) => {
   const [form] = Form.useForm();
 
   // 父组件传递参数
-  const { columns = [], type = 'form', initialValues = {}, onSearch, onReset, displayPre } = props;
+  const { columns = [], type = 'form', initialValues = {}, onSubmit, onReset, displayPre } = props;
 
   // 搜索表单控制是否展开
   const [expand, setExpand] = useState(false);
@@ -93,12 +93,12 @@ const Index = forwardRef((props: FormProProps, ref) => {
       // 触发验证
       const validate = await form.validateFields();
       if (Array.isArray(validate.errorFields)) return;
-      onSearch && onSearch(formData);
+      onSubmit && onSubmit(formData);
     }
     // 获取表单中的数据
     const data = await asyncAwaitForms(ref?.current);
     if (!data) return;
-    onSearch && onSearch(data);
+    onSubmit && onSubmit(data);
   };
   // 重置按钮事件
   const reset = () => {
@@ -109,15 +109,9 @@ const Index = forwardRef((props: FormProProps, ref) => {
 
   // 表单渲染
   const getFields = () => {
+    // 用于存储表单控件
     const children: any[] = [];
-    // Col布局参数
-    // const colItemLayout = {
-    //   xl: 6,
-    //   lg: 8,
-    //   md: 12,
-    //   sm: 24,
-    //   xs: 24,
-    // };
+    //为了兼容函数调用
     const _columns = typeof columns === 'function' ? columns() : columns;
     // 是否显示展开 - 关闭控件
     const isDisplayPre = typeof displayPre === 'number' && displayPre > 0;
@@ -179,7 +173,8 @@ const Index = forwardRef((props: FormProProps, ref) => {
                     </Fragment>
                   ) : (
                     <Fragment>
-                      <DownOutlined /> 展开
+                      <DownOutlined />
+                      展开
                     </Fragment>
                   )}
                 </a>
