@@ -31,8 +31,16 @@
 }
 html[data-prefers-color='dark'] {
   :global {
-    .ant-form-item-label > label {
+    .ant-form-item-label > label,
+    .ant-checkbox-wrapper,
+    .ant-radio-wrapper {
       color: @zntd-text-color;
+    }
+    .ant-switch {
+      background-color: @zntd-text-color;
+    }
+    .ant-switch-checked {
+      background-color: #1890ff;
     }
   }
 }

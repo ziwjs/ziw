@@ -51,6 +51,7 @@ const Index = forwardRef((props: FormProProps, ref) => {
   const RadioGroup = Radio.Group;
   const { RangePicker } = DatePicker;
   const CheckboxGroup = Checkbox.Group;
+  const [form] = Form.useForm();
 
   // 父组件传递参数
   const { columns = [], type = 'form', initialValues = {}, onSearch, onReset, displayPre } = props;
@@ -86,13 +87,23 @@ const Index = forwardRef((props: FormProProps, ref) => {
 
   // 查询按钮事件
   const search = async () => {
+    if (!ref) {
+      // 获取表单中的数据
+      const formData = form.getFieldsValue();
+      // 触发验证
+      const validate = await form.validateFields();
+      if (Array.isArray(validate.errorFields)) return;
+      onSearch && onSearch(formData);
+    }
+    // 获取表单中的数据
     const data = await asyncAwaitForms(ref?.current);
     if (!data) return;
     onSearch && onSearch(data);
   };
   // 重置按钮事件
   const reset = () => {
-    typeof ref?.current?.resetFields === 'function' && ref?.current?.resetFields();
+    if (ref) typeof ref?.current?.resetFields === 'function' && ref?.current?.resetFields();
+    else form.resetFields();
     onReset && onReset();
   };
 
@@ -100,16 +111,27 @@ const Index = forwardRef((props: FormProProps, ref) => {
   const getFields = () => {
     const children: any[] = [];
     // Col布局参数
-    const colItemLayout = {
-      xl: 6,
-      lg: 8,
-      md: 12,
-      sm: 24,
-      xs: 24,
-    };
+    // const colItemLayout = {
+    //   xl: 6,
+    //   lg: 8,
+    //   md: 12,
+    //   sm: 24,
+    //   xs: 24,
+    // };
     const _columns = typeof columns === 'function' ? columns() : columns;
     // 是否显示展开 - 关闭控件
     const isDisplayPre = typeof displayPre === 'number' && displayPre > 0;
+    // 显示 form-list 控件 Col布局参数
+    const colItemLayout = (index: number, num: number) => {
+      const showFun = (_num: number) => (isDisplayPre && displayPre <= index && !expand ? 0 : _num);
+      return {
+        xl: showFun(num),
+        lg: showFun(8),
+        md: showFun(12),
+        sm: showFun(24),
+        xs: showFun(24),
+      };
+    };
     if (Array.isArray(_columns)) {
       // 进行排序，order 值越小排列越靠前
       _columns
@@ -127,12 +149,7 @@ const Index = forwardRef((props: FormProProps, ref) => {
         // 解决控制 [antd: Switch] `value` is not a valid prop, do you mean `checked`? 错误
         if (_type === 'Switch') payload.valuePropName = 'checked';
         return children.push(
-          <Col
-            {...colItemLayout}
-            xl={isDisplayPre && displayPre <= index && !expand ? 0 : span}
-            key={key}
-            className={styles.leftCol}
-          >
+          <Col key={key} className={styles.leftCol} {...colItemLayout(index, span)}>
             <Form.Item {...payload}>{caseType(_type, other)}</Form.Item>
           </Col>,
         );
@@ -140,9 +157,14 @@ const Index = forwardRef((props: FormProProps, ref) => {
       // 查询模式添加一列显示
       type === 'searchForm' &&
         children.push(
-          <Col {...colItemLayout} key="query" className={styles.rightCol}>
+          <Col
+            {...colItemLayout(-1, 6)}
+            {...colItemLayout(-1, 6)}
+            key="query"
+            className={styles.rightCol}
+          >
             <Form.Item label=" ">
-              <Button type="primary" onClick={search}>
+              <Button type="primary" onClick={search} htmlType="submit">
                 <ZoomInOutlined /> 查询
               </Button>
               <Button style={{ marginLeft: 8 }} onClick={reset}>
@@ -170,7 +192,7 @@ const Index = forwardRef((props: FormProProps, ref) => {
   };
 
   return (
-    <Form layout="vertical" ref={ref} initialValues={initialValues}>
+    <Form form={form} layout="vertical" ref={ref} initialValues={initialValues}>
       <Row gutter={{ sm: 24 }} className={styles.rowBox}>
         {getFields()}
       </Row>

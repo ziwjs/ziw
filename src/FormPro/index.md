@@ -120,12 +120,10 @@ export default () => {
 四列栅格式的表单排列方式，常用于数据表格的高级搜索
 
 ```tsx
-import React, { Fragment, useRef, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { FormPro } from 'ziw';
 export default () => {
   const [formData, setFormData] = useState({});
-
-  const formRef = useRef();
 
   const options = [
     { label: 'Apple', value: 'Apple' },
@@ -135,7 +133,6 @@ export default () => {
   return (
     <Fragment>
       <FormPro
-        ref={formRef}
         type="searchForm"
         displayPre={3}
         initialValues={{ Input: '111' }}
@@ -175,7 +172,7 @@ export default () => {
 | ------------- | ---------------------------------------- | ---------------------- | ------ |
 | type          | 设置表单类型                             | `searchForm` \| `form` | `form` |
 | columns       | 表格列的配置描述，具体项见下表           | `ColumnsType[]`        | -      |
-| displayPre    | 时生效 只显示前面部分查询条件            | `number`               | -      |
+| displayPre    | 只显示前面部分查询条件                   | `number`               | -      |
 | initialValues | 表单默认值，只有初始化以及重置时生效     | `object`               | -      |
 | onSearch      | 仅在 `type = searchForm` 时生效 查询事件 | `function(data)`       | -      |
 | onReset       | 仅在 `type = searchForm` 时生效 重置事件 | `function()`           | -      |
