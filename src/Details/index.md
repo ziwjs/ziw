@@ -32,8 +32,8 @@ export default () => (
       { key: 'age', label: '年纪' },
       { key: 'height', label: '身高' },
       { key: 'weight', label: '体重' },
-      { key: 'bloodType', label: '血型', hide: true },
-      { key: 'nationality', label: '国籍', span: 1 },
+      { key: 'bloodType', label: '血型' },
+      { key: 'nationality', label: '国籍' },
       { key: 'occupation', label: '职业', span: 2 },
       {
         key: 'img',
@@ -48,10 +48,8 @@ export default () => (
 
 ## API
 
-| 参数      | 说明                                 | 类型                       | 默认值     |
-| --------- | ------------------------------------ | -------------------------- | ---------- |
-| size      | 间距大小                             | `number`                   | 24         |
-| split     | 设置拆分                             | `ReactNode`                |            |
-| direction | 间距方向                             | `vertical` \| `horizontal` | horizontal |
-| wrap      | 是否自动换行，仅在 horizontal 时有效 | `boolean`                  | true       |
-| button    | 按钮组                               | `Array`                    |            |
+| 参数       | 说明             | 类型       | 默认值 |
+| ---------- | ---------------- | ---------- | ------ |
+| dataSource | 数据对象         | `object`   |        |
+| columns    | 表格列的配置描述 | `object[]` |        |
+| bordered   | 是否展示边框     | `boolean`  | false  |
