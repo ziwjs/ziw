@@ -1,34 +1,25 @@
-import React, { Fragment, ReactNode } from 'react';
+import React from 'react';
 import { Button, Space } from 'antd';
-export interface ButtonGroupProProps {
-  /*
-  size: 间距大小
-  split: 设置拆分
-  direction: 间距方向
-  button: 按钮组
-  wrap: 是否自动换行，仅在 horizontal 时有效
-  */
-  size?: number;
-  split?: ReactNode;
-  direction?: 'vertical' | 'horizontal';
-  wrap?: boolean;
-  button?: {
-    label: string;
-  }[];
-}
+import { ButtonGroupProProps } from '@/types/ButtonGroupPro';
+
 const Index = (props: ButtonGroupProProps) => {
-  const { button, size = 24, split = null, direction = 'horizontal', wrap = true } = props;
+  const {
+    button,
+    splitSize = 'middle',
+    split = null,
+    direction = 'horizontal',
+    wrap = true,
+    size = 'middle',
+  } = props;
+
   return (
-    <Space size={size} split={split} direction={direction} wrap={wrap}>
-      {Array.isArray(button) && (
-        <Fragment>
-          {button.map(({ label, ...other }, index) => (
-            <Button key={index} {...other}>
-              {label || ''}
-            </Button>
-          ))}
-        </Fragment>
-      )}
+    <Space size={splitSize} split={split} direction={direction} wrap={wrap}>
+      {Array.isArray(button) &&
+        button.map(({ label, size: _size, ...other }, index) => (
+          <Button key={index} {...other} size={_size ? _size : size}>
+            {label || ''}
+          </Button>
+        ))}
     </Space>
   );
 };
