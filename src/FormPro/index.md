@@ -15,7 +15,7 @@ group:
 
 ```tsx
 import React, { Fragment, useRef, useState } from 'react';
-import { FormPro, ButtonGroupPro } from 'ziw';
+import { FormPro, ButtonGroup } from 'ziw';
 export default () => {
   const [formData, setFormData] = useState({});
 
@@ -68,7 +68,7 @@ export default () => {
         ]}
       />
       <div style={{ margin: '24px 0' }}>
-        <ButtonGroupPro
+        <ButtonGroup
           button={[
             {
               label: '提交表单',

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Space } from 'antd';
-import { ButtonGroupProProps } from '@/types/ButtonGroupPro';
+import { ButtonGroupProps } from '../types/ButtonGroup';
 
-const Index = (props: ButtonGroupProProps) => {
+const Index = (props: ButtonGroupProps) => {
   const {
     button,
     splitSize = 'middle',

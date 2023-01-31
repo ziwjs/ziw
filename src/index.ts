@@ -1,4 +1,3 @@
-export { default as ButtonGroupPro } from './ButtonGroupPro';
+export { default as ButtonGroup } from './ButtonGroup';
 export { default as FormPro } from './FormPro';
 export { default as Details } from './Details';
-export type { ButtonGroupProProps } from './ButtonGroupPro';

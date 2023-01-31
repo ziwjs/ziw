@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 
-export interface ButtonGroupProProps {
+export interface ButtonGroupProps {
   // button: 按钮组
   button?: {
     // label: 按钮名称

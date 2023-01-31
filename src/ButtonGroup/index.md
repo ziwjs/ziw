@@ -1,5 +1,5 @@
 ---
-title: ButtonGroupPro
+title: ButtonGroup
 nav:
   title: 组件
   path: /components
@@ -8,15 +8,15 @@ group:
   order: 1
 ---
 
-## ButtonGroupPro
+## ButtonGroup
 
 ## 基本用法
 
 ```tsx
 import React from 'react';
-import { ButtonGroupPro } from 'ziw';
+import { ButtonGroup } from 'ziw';
 export default () => (
-  <ButtonGroupPro button={[{ label: '按钮1' }, { label: '按钮2', type: 'primary' }]} />
+  <ButtonGroup button={[{ label: 'button 1' }, { label: 'button 2', type: 'primary' }]} />
 );
 ```
 
@@ -27,17 +27,17 @@ export default () => (
 
 ```tsx
 import React, { useState } from 'react';
-import { ButtonGroupPro } from 'ziw';
+import { ButtonGroup } from 'ziw';
 export default () => {
   let [size, setSize] = useState('middle');
   return (
-    <ButtonGroupPro
+    <ButtonGroup
       size={size}
       button={[
         { label: 'small', onClick: () => setSize('small') },
         { label: 'middle', type: 'primary', onClick: () => setSize('middle') },
         { label: 'large', type: 'primary', onClick: () => setSize('large') },
-        { label: '按钮', type: 'primary', size: 'middle' },
+        { label: 'button', type: 'primary', size: 'middle' },
       ]}
     />
   );
@@ -51,11 +51,11 @@ export default () => {
 
 ```tsx
 import React, { useState } from 'react';
-import { ButtonGroupPro } from 'ziw';
+import { ButtonGroup } from 'ziw';
 export default () => {
   let [size, setSize] = useState('middle');
   return (
-    <ButtonGroupPro
+    <ButtonGroup
       splitSize={size}
       button={[
         { label: 'small', onClick: () => setSize('small') },
@@ -83,9 +83,9 @@ export default () => {
 
 ```tsx
 import React from 'react';
-import { ButtonGroupPro } from 'ziw';
+import { ButtonGroup } from 'ziw';
 export default () => (
-  <ButtonGroupPro
+  <ButtonGroup
     button={[
       { label: 'default' },
       { label: 'primary', type: 'primary' },
@@ -111,14 +111,14 @@ export default () => (
 
 ```tsx
 import React from 'react';
-import { ButtonGroupPro } from 'ziw';
+import { ButtonGroup } from 'ziw';
 export default () => (
-  <ButtonGroupPro
+  <ButtonGroup
     button={[
-      { label: '危险', type: 'primary', danger: true },
-      { label: 'default', type: 'primary', ghost: true },
-      { label: 'primary', type: 'primary', disabled: true },
-      { label: 'primary', type: 'primary', loading: true },
+      { label: 'danger', type: 'primary', danger: true },
+      { label: 'ghost', type: 'primary', ghost: true },
+      { label: 'disabled', type: 'primary', disabled: true },
+      { label: 'loading', type: 'primary', loading: true },
     ]}
   />
 );
@@ -130,15 +130,14 @@ export default () => (
 
 ```tsx
 import React from 'react';
-import { ButtonGroupPro } from 'ziw';
+import { ButtonGroup } from 'ziw';
 export default () => (
-  <ButtonGroupPro
+  <ButtonGroup
     direction="vertical"
     button={[
-      { label: '按钮' },
-      { label: '按钮', type: 'primary' },
-      { label: '按钮', type: 'primary', danger: true },
-      { label: '按钮', type: 'dashed' },
+      { label: 'button 1' },
+      { label: 'button 2', type: 'primary' },
+      { label: 'button 3', type: 'primary', danger: true },
     ]}
   />
 );
@@ -150,14 +149,14 @@ export default () => (
 
 ```tsx
 import React from 'react';
-import { ButtonGroupPro } from 'ziw';
+import { ButtonGroup } from 'ziw';
 export default () => (
-  <ButtonGroupPro
+  <ButtonGroup
     split={<div>|</div>}
     button={[
-      { label: '按钮' },
-      { label: '按钮', type: 'primary' },
-      { label: '按钮', type: 'primary', danger: true },
+      { label: 'button 1' },
+      { label: 'button 2', type: 'primary' },
+      { label: 'button 3', type: 'primary', danger: true },
     ]}
   />
 );
