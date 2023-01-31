@@ -29,7 +29,7 @@ export default () => (
 import React, { useState } from 'react';
 import { ButtonGroupPro } from 'ziw';
 export default () => {
-  const [size, setSize] = useState('middle');
+  let [size, setSize] = useState('middle');
   return (
     <ButtonGroupPro
       size={size}
@@ -50,19 +50,21 @@ export default () => {
 通过设置 splitSize 为 large middle 分别把间距设为大、中间距。若不设置 splitSize，则间距为中。
 
 ```tsx
-import React from 'react';
+import React, { useState } from 'react';
 import { ButtonGroupPro } from 'ziw';
-export default () => (
-  <ButtonGroupPro
-    splitSize="small"
-    button={[
-      { label: '按钮1' },
-      { label: '按钮2', type: 'primary' },
-      { label: '按钮3' },
-      { label: '按钮4', type: 'primary' },
-    ]}
-  />
-);
+export default () => {
+  let [size, setSize] = useState('middle');
+  return (
+    <ButtonGroupPro
+      splitSize={size}
+      button={[
+        { label: 'small', onClick: () => setSize('small') },
+        { label: 'middle', type: 'primary', onClick: () => setSize('middle') },
+        { label: 'large', type: 'primary', onClick: () => setSize('large') },
+      ]}
+    />
+  );
+};
 ```
 
 ## 按钮类型
