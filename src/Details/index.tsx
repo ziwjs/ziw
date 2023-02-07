@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Descriptions } from 'antd';
-// import './index.less';
 export interface DetailsProps {
   dataSource: { [key: string]: any };
   columns: {

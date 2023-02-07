@@ -1,15 +1,13 @@
 import { ReactNode } from 'react';
+import type { ButtonProps } from 'antd';
 
 export interface ButtonGroupProps {
   // button: 按钮组
-  button?: {
-    // label: 按钮名称
-    label: string;
-  }[];
+  button?: Array<ButtonProps & { label: string }>;
   // 设置按钮大小
   size: 'large' | 'middle' | 'small';
   // splitSize: 间距大小
-  splitSize?: 'large' | 'middle' | 'small' | number;
+  splitSize?: 'small' | 'middle' | 'large' | number;
   // split: 设置拆分
   split?: ReactNode;
   // direction: 设置方向

@@ -166,8 +166,10 @@ export default () => (
 
 | 参数 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
-| button | 按钮组 | `Array` |  |
+| button | 按钮组 | `Array<ButtonProps & { label: string }>` |  |
 | splitSize | 间距大小 | `large` \| `middle` \| `small` ｜ `number` | middle |
 | split | 设置拆分 | `ReactNode` |  |
 | direction | 间距方向 | `vertical` \| `horizontal` | horizontal |
 | wrap | 是否自动换行，仅在 horizontal 时有效 | `boolean` | true |
+
+### [ButtonProps](https://ant.design/components/button-cn#api)
