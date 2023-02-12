@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
 import { Select } from 'antd';
 import DropdownRender from './dropdownRender';
+import { SelectTableProps } from '../types/SelectTable';
 
-export default function SelectTable(props: any) {
+export default function SelectTable(props: SelectTableProps) {
   const {
     mode,
+    style,
     columns,
     options,
+    value: _value,
+    dropdownStyle,
     labelInValue = false,
+    onDropdownVisibleChange,
     fieldNames = { label: 'label', value: 'value' },
+    ...otherPrors
   } = props;
 
   // 控制下拉框的显示
   let [open, setOpen] = useState(false);
 
   // 控制输入框的值
-  let [value, setValue] = useState(undefined);
+  let [value, setValue] = useState(_value);
 
   // DropdownRender props
   const dropdownRenderProps = {
@@ -31,7 +37,6 @@ export default function SelectTable(props: any) {
 
   // Select props
   const payload = {
-    open,
     mode,
     value,
     options,
@@ -39,10 +44,15 @@ export default function SelectTable(props: any) {
     labelInValue,
     showSearch: true,
     showArrow: false,
-    style: { minWidth: 300 },
-    dropdownStyle: { padding: 12 },
     defaultActiveFirstOption: false,
-    onDropdownVisibleChange: (open: boolean) => setOpen(open),
+    ...otherPrors,
+    open,
+    style: { minWidth: 300, ...style },
+    dropdownStyle: { padding: 12, ...dropdownStyle },
+    onDropdownVisibleChange: (open: boolean) => {
+      setOpen(open);
+      typeof onDropdownVisibleChange === 'function' && onDropdownVisibleChange(open);
+    },
     dropdownRender: () => <DropdownRender {...dropdownRenderProps} />,
   };
   return <Select {...payload} />;

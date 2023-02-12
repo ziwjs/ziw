@@ -44,6 +44,7 @@ export default () => {
 
   return (
     <SelectTable
+      value={32}
       columns={columns}
       options={options}
       fieldNames={{ label: 'name', value: 'code' }}
