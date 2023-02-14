@@ -6,7 +6,6 @@ import { SelectTableProps } from '../types/SelectTable';
 export default function SelectTable(props: SelectTableProps) {
   const {
     mode,
-    style,
     columns,
     options,
     value: _value,
@@ -43,17 +42,23 @@ export default function SelectTable(props: SelectTableProps) {
     fieldNames,
     labelInValue,
     showSearch: true,
-    showArrow: false,
-    defaultActiveFirstOption: false,
     ...otherPrors,
     open,
-    style: { minWidth: 300, ...style },
+    defaultActiveFirstOption: false,
     dropdownStyle: { padding: 12, ...dropdownStyle },
     onDropdownVisibleChange: (open: boolean) => {
       setOpen(open);
       typeof onDropdownVisibleChange === 'function' && onDropdownVisibleChange(open);
     },
+    onClear: () => {
+      setValue(undefined);
+      typeof props?.onClear === 'function' && props.onClear();
+    },
     dropdownRender: () => <DropdownRender {...dropdownRenderProps} />,
   };
-  return <Select {...payload} />;
+  return (
+    <>
+      <Select {...payload} />
+    </>
+  );
 }

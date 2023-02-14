@@ -1,50 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Table } from 'antd';
+import { DropdownRenderProps } from '../types/SelectTable';
+import './style.less';
 
-interface DropdownRenderProps {
-  value?: any;
-  columns?: any;
-  dataSource: any;
-  originNode?: any;
-  setValue: any;
-  setOpen: any;
-  labelInValue?: boolean;
-  mode?: 'multiple' | 'tags' | undefined;
-  fieldNames?: { label: string | undefined; value: string | number | undefined };
-}
 export default function DropdownRender(props: DropdownRenderProps) {
   const { value, columns, dataSource, setValue, setOpen, labelInValue, mode, fieldNames } = props;
+  // columns 是否存在 fieldNames?.value fieldNames?.label
+  const dataIndexTrue =
+    columns.map((item: any) => item.dataIndex).includes(fieldNames?.value) &&
+    columns.map((item: any) => item.dataIndex).includes(fieldNames?.label);
 
   // 多选存储选中的值
   let [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   return (
     <Table
-      rowKey={fieldNames?.value}
+      rowKey={String(fieldNames?.value)}
       size="small"
-      columns={columns}
+      columns={
+        dataIndexTrue
+          ? columns
+          : columns.map((item: any) => {
+              return { title: item?.title };
+            })
+      }
       pagination={false}
       className="tableBox"
       dataSource={dataSource}
       rowClassName={(record) => {
         //  添加选中样式
-        const { [fieldNames?.value]: _value } = record;
+        const { [fieldNames?.value]: _value, disabled = false } = record;
+        let styleStr = '';
+        // 禁用样式
+        if (disabled) styleStr += 'disabled ';
         // 选择模式 多选
         if (mode === 'multiple' || mode === 'tags') {
-          return selectedRowKeys.find((item) => item?.value === _value)
-            ? 'ant-table-row-selected'
-            : '';
+          selectedRowKeys.find((item) => item?.value === _value)
+            ? (styleStr += 'ant-table-row-selected')
+            : styleStr;
+        } else {
+          // 选择模式 单选
+          _value && (value?.value || value) && _value === (value?.value || value)
+            ? (styleStr += 'ant-table-row-selected')
+            : styleStr;
         }
-        // 选择模式 单选
-        return _value && (value?.value || value) && _value === (value?.value || value)
-          ? 'ant-table-row-selected'
-          : '';
+        console.log('styleStr', styleStr);
+        return styleStr;
       }}
       onRow={(record) => {
         return {
           onClick: () => {
+            const {
+              [fieldNames?.value]: value,
+              [fieldNames?.label]: label,
+              disabled = false,
+            } = record;
+            // 禁用不可点击
+            if (disabled) return;
+            // 错误提示
+            if (!dataIndexTrue)
+              return console.error(
+                'The fieldNames of the SelectTable component must contain the value and label fields',
+              );
             // 选择模式 多选
-            const { [fieldNames?.value]: value, [fieldNames?.label]: label } = record;
             if (mode === 'multiple' || mode === 'tags') {
               let _selectedRowKeys = [...selectedRowKeys];
               // 未选中进行添加
@@ -62,6 +80,7 @@ export default function DropdownRender(props: DropdownRenderProps) {
               );
               return;
             }
+
             // 选择模式 单选
             labelInValue ? setValue({ value, label }) : setValue(value);
             setOpen(false);

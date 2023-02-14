@@ -11,6 +11,8 @@ group:
 
 ## 基本用法
 
+弹出一个下拉菜单给用户选择操作，用于代替原生的选择器，或者需要一个更优雅的多选器时。
+
 ```tsx
 import React from 'react';
 import { SelectTable } from 'ziw';
@@ -18,37 +20,48 @@ export default () => {
   const columns = [
     {
       title: '编号',
-      dataIndex: 'code',
+      dataIndex: 'value',
       align: 'center',
     },
     {
       title: '名字',
-      dataIndex: 'name',
+      dataIndex: 'label',
       align: 'center',
-    },
-  ];
-  const options = [
-    {
-      name: 'John',
-      code: 32,
-    },
-    {
-      name: 'Jim',
-      code: 42,
-    },
-    {
-      name: 'Joe',
-      code: 33,
     },
   ];
 
   return (
-    <SelectTable
-      value={32}
-      columns={columns}
-      options={options}
-      fieldNames={{ label: 'name', value: 'code' }}
-    />
+    <>
+      <SelectTable
+        value={32}
+        columns={columns}
+        options={[
+          {
+            label: 'John',
+            value: 32,
+          },
+          {
+            label: 'Jim',
+            value: 42,
+            disabled: true,
+          },
+        ]}
+        style={{ width: 200 }}
+      />
+      <SelectTable disabled columns={columns} options={[]} style={{ width: 200, marginLeft: 24 }} />
+      <SelectTable loading columns={columns} options={[]} style={{ width: 200, marginLeft: 24 }} />
+      <SelectTable
+        allowClear
+        columns={columns}
+        options={[
+          {
+            label: 'Joe',
+            value: 33,
+          },
+        ]}
+        style={{ width: 200, marginLeft: 24 }}
+      />
+    </>
   );
 };
 ```
