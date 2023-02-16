@@ -2,13 +2,13 @@ import { CSSProperties } from 'react';
 
 declare type Mode = 'multiple' | 'tags' | undefined;
 declare type RawValue = string | number;
-interface LabeledValue {
+export interface LabeledValue {
   key?: string;
   value: RawValue;
   label: React.ReactNode;
 }
 
-declare type Value = RawValue | RawValue[] | LabeledValue | LabeledValue[] | undefined;
+export declare type Value = RawValue | RawValue[] | LabeledValue | LabeledValue[] | undefined;
 
 interface FieldNames {
   value?: string;
@@ -31,6 +31,10 @@ export interface SelectTableProps {
   onDropdownVisibleChange?: (open: boolean) => void;
   // 自定义节点 label、value、options 的字段
   fieldNames?: FieldNames;
+  // 清除内容时回调
+  onClear?: () => void;
+  // 取消选中时调用，参数为选中项的 value (或 key) 值，仅在 multiple 或 tags 模式下生效
+  onDeselect?: (value: Value, option: any) => void;
 
   columns: any[];
   options: any[];

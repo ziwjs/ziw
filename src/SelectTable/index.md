@@ -29,9 +29,20 @@ export default () => {
       align: 'center',
     },
   ];
+  const style = {
+    margin: '10px',
+    flex: '1 1 200px',
+  };
 
   return (
-    <>
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      }}
+    >
       <SelectTable
         value={32}
         columns={columns}
@@ -45,11 +56,15 @@ export default () => {
             value: 42,
             disabled: true,
           },
+          {
+            label: 'Joe',
+            value: 33,
+          },
         ]}
-        style={{ width: 200 }}
+        style={style}
       />
-      <SelectTable disabled columns={columns} options={[]} style={{ width: 200, marginLeft: 24 }} />
-      <SelectTable loading columns={columns} options={[]} style={{ width: 200, marginLeft: 24 }} />
+      <SelectTable disabled columns={columns} options={[]} style={style} />
+      <SelectTable loading columns={columns} options={[]} style={style} />
       <SelectTable
         allowClear
         columns={columns}
@@ -59,9 +74,55 @@ export default () => {
             value: 33,
           },
         ]}
-        style={{ width: 200, marginLeft: 24 }}
+        style={style}
       />
-    </>
+    </div>
+  );
+};
+```
+
+## 多选
+
+多选，从已有条目中选择
+
+```tsx
+import React from 'react';
+import { SelectTable } from 'ziw';
+export default () => {
+  const columns = [
+    {
+      title: '编号',
+      dataIndex: 'value',
+      align: 'center',
+    },
+    {
+      title: '名字',
+      dataIndex: 'label',
+      align: 'center',
+    },
+  ];
+  return (
+    <SelectTable
+      mode="multiple"
+      value={[42]}
+      columns={columns}
+      style={{ width: 300 }}
+      options={[
+        {
+          label: 'John',
+          value: 32,
+        },
+        {
+          label: 'Jim',
+          value: 42,
+          disabled: true,
+        },
+        {
+          label: 'Joe',
+          value: 33,
+        },
+      ]}
+    />
   );
 };
 ```

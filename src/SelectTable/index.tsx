@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { Select } from 'antd';
 import DropdownRender from './dropdownRender';
-import { SelectTableProps } from '../types/SelectTable';
+import { SelectTableProps, LabeledValue } from '../types/SelectTable';
 
 export default function SelectTable(props: SelectTableProps) {
   const {
     mode,
     columns,
     options,
+    onClear,
+    onDeselect,
     value: _value,
     dropdownStyle,
     labelInValue = false,
@@ -52,7 +54,14 @@ export default function SelectTable(props: SelectTableProps) {
     },
     onClear: () => {
       setValue(undefined);
-      typeof props?.onClear === 'function' && props.onClear();
+      typeof onClear === 'function' && onClear();
+    },
+    onDeselect: (record: string | number | LabeledValue, option) => {
+      if (mode === 'multiple' || mode === 'tags') {
+        if (labelInValue) setValue(value.filter((item: LabeledValue) => item.value !== record));
+        else setValue(value.filter((item: string | number) => item !== record));
+      }
+      typeof onDeselect === 'function' && onDeselect(record, option);
     },
     dropdownRender: () => <DropdownRender {...dropdownRenderProps} />,
   };
