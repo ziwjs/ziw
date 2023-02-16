@@ -12,7 +12,11 @@ export default function DropdownRender(props: DropdownRenderProps) {
     columns.map((item: any) => item.dataIndex).includes(fieldNames?.label);
 
   // 多选存储选中的值
-  let [selectedRowKeys, setSelectedRowKeys] = useState(Array.isArray(value) ? value : []);
+  let [selectedRowKeys, setSelectedRowKeys] = useState([]);
+
+  useEffect(() => {
+    setSelectedRowKeys(Array.isArray(value) ? value : []);
+  }, [value]);
 
   return (
     <Table
