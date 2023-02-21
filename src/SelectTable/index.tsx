@@ -13,6 +13,7 @@ export default function SelectTable(props: SelectTableProps) {
     value: _value,
     dropdownStyle,
     labelInValue = false,
+    placeholder = '请选择',
     onDropdownVisibleChange,
     fieldNames = { label: 'label', value: 'value' },
     ...otherPrors
@@ -42,19 +43,20 @@ export default function SelectTable(props: SelectTableProps) {
     value,
     options,
     fieldNames,
+    placeholder,
     labelInValue,
     showSearch: true,
     ...otherPrors,
     open,
     defaultActiveFirstOption: false,
     dropdownStyle: { padding: 12, ...dropdownStyle },
-    onDropdownVisibleChange: (open: boolean) => {
-      setOpen(open);
-      typeof onDropdownVisibleChange === 'function' && onDropdownVisibleChange(open);
-    },
+    dropdownRender: () => <DropdownRender {...dropdownRenderProps} />,
     onClear: () => {
-      setValue(undefined);
-      typeof onClear === 'function' && onClear();
+      const clerar = setTimeout(() => {
+        setValue(undefined);
+        typeof onClear === 'function' && onClear();
+      }, 0);
+      return () => clearTimeout(clerar);
     },
     onDeselect: (record: string | number | LabeledValue, option) => {
       if (mode === 'multiple' || mode === 'tags') {
@@ -63,7 +65,11 @@ export default function SelectTable(props: SelectTableProps) {
       }
       typeof onDeselect === 'function' && onDeselect(record, option);
     },
-    dropdownRender: () => <DropdownRender {...dropdownRenderProps} />,
+
+    onDropdownVisibleChange: (open: boolean) => {
+      setOpen(open);
+      typeof onDropdownVisibleChange === 'function' && onDropdownVisibleChange(open);
+    },
   };
   return (
     <>

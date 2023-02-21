@@ -45,6 +45,7 @@ export default () => {
     >
       <SelectTable
         value={32}
+        style={style}
         columns={columns}
         options={[
           {
@@ -61,20 +62,14 @@ export default () => {
             value: 33,
           },
         ]}
-        style={style}
       />
       <SelectTable disabled columns={columns} options={[]} style={style} />
       <SelectTable loading columns={columns} options={[]} style={style} />
       <SelectTable
         allowClear
-        columns={columns}
-        options={[
-          {
-            label: 'Joe',
-            value: 33,
-          },
-        ]}
         style={style}
+        columns={columns}
+        options={[{ label: 'Joe', value: 33 }]}
       />
     </div>
   );
@@ -132,7 +127,14 @@ export default () => {
         marginTop: 24,
       }}
     >
-      <SelectTable value={[42]} style={style} mode="multiple" columns={columns} options={options} />
+      <SelectTable
+        allowClear
+        value={[42]}
+        style={style}
+        mode="multiple"
+        columns={columns}
+        options={options}
+      />
       <SelectTable
         disabled
         style={style}

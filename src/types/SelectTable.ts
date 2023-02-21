@@ -23,6 +23,8 @@ export interface SelectTableProps {
   mode?: Mode;
   //   设置样式
   style?: CSSProperties;
+  // 选择框默认文本
+  placeholder?: string;
   // 下拉菜单的 style 属性
   dropdownStyle?: CSSProperties;
   // 是否把每个选项的 label 包装到 value 中，会把 Select 的 value 类型从 string 变为 { value: string, label: ReactNode } 的格式
