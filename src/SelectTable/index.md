@@ -175,13 +175,15 @@ export default () => {
   };
   return (
     <>
-      <ButtonGroup
-        button={[
-          { label: 'small', onClick: () => setSize('small') },
-          { label: 'middle', type: 'primary', onClick: () => setSize('middle') },
-          { label: 'large', type: 'primary', onClick: () => setSize('large') },
-        ]}
-      />
+      <div style={{ margin: 10 }}>
+        <ButtonGroup
+          button={[
+            { label: 'small', onClick: () => setSize('small') },
+            { label: 'middle', type: 'primary', onClick: () => setSize('middle') },
+            { label: 'large', type: 'primary', onClick: () => setSize('large') },
+          ]}
+        />
+      </div>
       <div
         style={{
           display: 'flex',
@@ -236,6 +238,65 @@ export default () => {
         />
       </div>
     </>
+  );
+};
+```
+
+## 自定义节点
+
+自定义节点 label、value 的字段
+
+```tsx
+import React from 'react';
+import { SelectTable } from 'ziw';
+export default () => {
+  const columns = [
+    {
+      title: '编号',
+      dataIndex: 'id',
+      align: 'center',
+    },
+    {
+      title: '名字',
+      dataIndex: 'name',
+      align: 'center',
+    },
+  ];
+
+  const options = [
+    { name: 'John', id: 32, age: 18 },
+    { name: 'Jim', id: 42 },
+    { name: 'Joe', id: 33 },
+  ];
+
+  const style = {
+    margin: '10px',
+    flex: '1 1 200px',
+  };
+
+  const props = {
+    style,
+    columns,
+    options,
+    allowClear: true,
+    fieldNames: { label: 'name', value: 'id' },
+    onChange: (value, option) => console.log('value --->', value, 'option --->', option),
+  };
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        marginTop: 24,
+      }}
+    >
+      <SelectTable {...props} />
+      <SelectTable {...props} labelInValue />
+      <SelectTable {...props} mode="multiple" />
+      <SelectTable {...props} mode="multiple" labelInValue />
+    </div>
   );
 };
 ```

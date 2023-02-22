@@ -9,6 +9,7 @@ export default function SelectTable(props: SelectTableProps) {
     columns,
     options,
     onClear,
+    onChange,
     onDeselect,
     value: _value,
     dropdownStyle,
@@ -32,11 +33,13 @@ export default function SelectTable(props: SelectTableProps) {
     columns,
     setOpen,
     setValue,
+    onChange,
     fieldNames,
     labelInValue,
     dataSource: options,
   };
-
+  const isMode = mode === 'multiple' || mode === 'tags';
+  const isOnChange = typeof onChange === 'function';
   // Select props
   const payload = {
     mode,
@@ -53,27 +56,35 @@ export default function SelectTable(props: SelectTableProps) {
     dropdownRender: () => <DropdownRender {...dropdownRenderProps} />,
     onClear: () => {
       const clerar = setTimeout(() => {
-        setValue(undefined);
+        if (isMode) {
+          setValue([]);
+          isOnChange && onChange([], []);
+        } else {
+          setValue(undefined);
+          isOnChange && onChange(undefined, undefined);
+        }
         typeof onClear === 'function' && onClear();
       }, 0);
       return () => clearTimeout(clerar);
     },
     onDeselect: (record: string | number | LabeledValue, option) => {
-      if (mode === 'multiple' || mode === 'tags') {
-        if (labelInValue) setValue(value.filter((item: LabeledValue) => item.value !== record));
-        else setValue(value.filter((item: string | number) => item !== record));
+      if (isMode) {
+        if (labelInValue) {
+          const { value: _value, label } = record;
+          setValue(value.filter((item: LabeledValue) => item?.value !== _value));
+          isOnChange &&
+            onChange({ [fieldNames?.value]: _value, [fieldNames?.label]: label }, option);
+        } else {
+          setValue(value.filter((item: string | number) => item !== record));
+          isOnChange && onChange(record, option);
+        }
       }
       typeof onDeselect === 'function' && onDeselect(record, option);
     },
-
     onDropdownVisibleChange: (open: boolean) => {
       setOpen(open);
       typeof onDropdownVisibleChange === 'function' && onDropdownVisibleChange(open);
     },
   };
-  return (
-    <>
-      <Select {...payload} />
-    </>
-  );
+  return <Select {...payload} />;
 }

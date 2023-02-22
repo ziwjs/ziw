@@ -38,6 +38,7 @@ export interface SelectTableProps {
   // 取消选中时调用，参数为选中项的 value (或 key) 值，仅在 multiple 或 tags 模式下生效
   onDeselect?: (value: Value, option: any) => void;
 
+  onChange?: (value: any, option: any) => void;
   columns: any[];
   options: any[];
 }
@@ -47,7 +48,8 @@ export interface DropdownRenderProps {
   mode?: Mode;
   fieldNames?: FieldNames;
   labelInValue?: boolean;
-
+  // 选中 option，或 input 的 value 变化时，调用此函数
+  onChange?: (value: any, option: any) => void;
   columns?: any;
   dataSource: any;
   originNode?: any;
