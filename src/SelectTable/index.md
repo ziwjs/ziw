@@ -300,3 +300,74 @@ export default () => {
   );
 };
 ```
+
+## 响应式 maxTagCount
+
+多选下通过响应式布局让选项自动收缩。该功能对性能有所消耗，不推荐在大表单场景下使用。
+
+```tsx
+import React from 'react';
+import { SelectTable } from 'ziw';
+export default () => {
+  const columns = [
+    {
+      title: '编号',
+      dataIndex: 'value',
+      align: 'center',
+      width: 100,
+    },
+    {
+      title: '名字',
+      dataIndex: 'label',
+      align: 'center',
+      width: 100,
+    },
+  ];
+
+  const options = () => {
+    const options = [];
+    for (let i = 0; i < 30; i++) {
+      const text = i + 1;
+      options.push({
+        label: text,
+        value: text,
+      });
+    }
+    return options;
+  };
+
+  const style = {
+    margin: '10px',
+    flex: '1 1 300px',
+  };
+  return (
+    <div
+      style={{
+        display: 'flex',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+        marginTop: 24,
+      }}
+    >
+      <SelectTable
+        allowClear
+        style={style}
+        mode="multiple"
+        columns={columns}
+        options={options}
+        maxTagCount="responsive"
+      />
+      <SelectTable
+        allowClear
+        value={[1, 2, 3, 4]}
+        style={style}
+        mode="multiple"
+        columns={columns}
+        options={options}
+        maxTagCount={2}
+      />
+    </div>
+  );
+};
+```

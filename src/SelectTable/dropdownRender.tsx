@@ -14,6 +14,7 @@ export default function DropdownRender(props: DropdownRenderProps) {
     mode,
     fieldNames,
     onChange,
+    loading,
   } = props;
 
   // columns 是否存在 fieldNames?.value fieldNames?.label
@@ -32,6 +33,8 @@ export default function DropdownRender(props: DropdownRenderProps) {
     <Table
       rowKey={String(fieldNames?.value)}
       size="small"
+      loading={loading}
+      scroll={{ x: 'max-content', y: 250 }}
       columns={
         columns
         // dataIndexTrue
@@ -43,9 +46,10 @@ export default function DropdownRender(props: DropdownRenderProps) {
       pagination={false}
       dataSource={dataSource}
       rowClassName={(record) => {
+        if (!dataIndexTrue) return '';
         //  添加选中样式
-        const { [fieldNames?.value]: _value, disabled = false } = record;
         let styleStr = '';
+        const { [fieldNames?.value]: _value, disabled = false } = record;
         // 禁用样式
         if (disabled) styleStr += 'disabled ';
         // 选择模式 多选
@@ -68,6 +72,10 @@ export default function DropdownRender(props: DropdownRenderProps) {
       onRow={(record) => {
         return {
           onClick: () => {
+            const errorStr =
+              'The fieldNames of the SelectTable component must contain the value and label fields';
+            // 错误提示
+            if (!dataIndexTrue) return console.error(errorStr);
             const {
               [fieldNames?.value]: value,
               [fieldNames?.label]: label,
@@ -76,11 +84,6 @@ export default function DropdownRender(props: DropdownRenderProps) {
             const isOnChangeFun = typeof onChange === 'function';
             // 禁用不可点击
             if (disabled) return;
-            // 错误提示
-            if (!dataIndexTrue)
-              return console.error(
-                'The fieldNames of the SelectTable component must contain the value and label fields',
-              );
             // 选择模式 多选
             if (mode === 'multiple' || mode === 'tags') {
               let _selectedRowKeys = [...selectedRowKeys];

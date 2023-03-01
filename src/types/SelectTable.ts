@@ -33,6 +33,8 @@ export interface SelectTableProps {
   onDropdownVisibleChange?: (open: boolean) => void;
   // 自定义节点 label、value、options 的字段
   fieldNames?: FieldNames;
+  // 加载中状态
+  loading?: boolean;
   // 清除内容时回调
   onClear?: () => void;
   // 取消选中时调用，参数为选中项的 value (或 key) 值，仅在 multiple 或 tags 模式下生效
@@ -48,6 +50,7 @@ export interface DropdownRenderProps {
   mode?: Mode;
   fieldNames?: FieldNames;
   labelInValue?: boolean;
+  loading?: boolean;
   // 选中 option，或 input 的 value 变化时，调用此函数
   onChange?: (value: any, option: any) => void;
   columns?: any;
