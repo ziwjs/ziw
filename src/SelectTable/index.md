@@ -175,15 +175,14 @@ export default () => {
   };
   return (
     <>
-      <div style={{ margin: 10 }}>
-        <ButtonGroup
-          button={[
-            { label: 'small', onClick: () => setSize('small') },
-            { label: 'middle', type: 'primary', onClick: () => setSize('middle') },
-            { label: 'large', type: 'primary', onClick: () => setSize('large') },
-          ]}
-        />
-      </div>
+      <ButtonGroup
+        style={{ margin: '0 10px' }}
+        button={[
+          { label: 'small', onClick: () => setSize('small') },
+          { label: 'middle', type: 'primary', onClick: () => setSize('middle') },
+          { label: 'large', type: 'primary', onClick: () => setSize('large') },
+        ]}
+      />
       <div
         style={{
           display: 'flex',

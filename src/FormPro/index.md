@@ -9,6 +9,13 @@ group:
 
 ## FormPro
 
+高性能表单控件，自带数据域管理。包含数据录入、校验以及对应样式。
+
+## 何时使用
+
+用于创建一个实体或收集信息。  
+需要对输入的数据类型进行校验时。
+
 ## 基本用法
 
 基本的表单数据域控制展示，包含布局、初始化、验证、提交。
@@ -17,9 +24,8 @@ group:
 import React, { Fragment, useRef, useState } from 'react';
 import { FormPro, ButtonGroup } from 'ziw';
 export default () => {
-  const [formData, setFormData] = useState({});
-
   const formRef = useRef();
+  const [formData, setFormData] = useState({});
 
   const options = [
     { label: 'Apple', value: 'Apple' },
@@ -39,14 +45,35 @@ export default () => {
     },
   ];
 
+  const selectTablecolumns = [
+    {
+      title: '编号',
+      dataIndex: 'value',
+      align: 'center',
+    },
+    {
+      title: '名字',
+      dataIndex: 'label',
+      align: 'center',
+    },
+  ];
+
   return (
     <Fragment>
       <FormPro
         ref={formRef}
         initialValues={{ Input: '111' }}
         columns={[
-          { key: 'TextArea', label: 'TextArea', type: 'TextArea' },
           { key: 'Input', label: 'Input', placeholder: 'placeholder' },
+          {
+            key: 'SelectTable',
+            label: 'SelectTable',
+            type: 'SelectTable',
+            options,
+            allowClear: true,
+            placeholder: 'SelectTable',
+            columns: selectTablecolumns,
+          },
           { key: 'InputNumber', label: 'InputNumber', type: 'InputNumber' },
           {
             key: 'Select',
@@ -59,56 +86,367 @@ export default () => {
           { key: 'Cascader', label: 'Cascader', type: 'Cascader', options: cascaderOptions },
           { key: 'TimePicker', label: 'TimePicker', type: 'TimePicker' },
           { key: 'DatePicker', label: 'DatePicker', type: 'DatePicker' },
-          { key: 'Slider', label: 'Slider', type: 'Slider' },
-          { key: 'RangePicker', label: 'RangePicker', type: 'RangePicker', span: 12 },
+          { key: 'RangePicker', label: 'RangePicker', type: 'RangePicker' },
           { key: 'CheckboxGroup', label: 'CheckboxGroup', type: 'CheckboxGroup', options },
           { key: 'RadioGroup', label: 'RadioGroup', type: 'RadioGroup', options },
-          { key: 'Switch', label: 'Switch', type: 'Switch' },
           { key: 'Rate', label: 'Rate', type: 'Rate' },
+          { key: 'Switch', label: 'Switch', type: 'Switch' },
+          { key: 'Slider', label: 'Slider', type: 'Slider' },
+          { key: 'TextArea', label: 'TextArea', type: 'TextArea' },
         ]}
       />
-      <div style={{ margin: '24px 0' }}>
-        <ButtonGroup
-          button={[
-            {
-              label: '提交表单',
-              type: 'primary',
-              onClick: async () => {
-                /*
-              通过使用 getFormValue() api 获取表单值
-              当然，你也可以通过使用 antd Form 提供的 api 获取
+      <ButtonGroup
+        button={[
+          {
+            label: '提交表单',
+            type: 'primary',
+            onClick: async () => {
+              /*
+                通过使用 getFormValue() api 获取表单值
+                当然，你也可以通过使用 antd Form 提供的 api 获取
               */
-                const data = await formRef.current.getFormValue();
-                if (!data) return;
-                setFormData(data);
-              },
+              const data = await formRef.current.getFormValue();
+              if (!data) return;
+              setFormData(data);
             },
-            {
-              label: '修改表单',
-              onClick: () =>
-                /*
-              通过使用 setFieldsValue() api 修改表单值
-              当然，你也可以通过使用 antd Form 提供的 api 修改
+          },
+          {
+            label: '修改表单',
+            onClick: () =>
+              /*
+                通过使用 setFieldsValue() api 修改表单值
+                当然，你也可以通过使用 antd Form 提供的 api 修改
               */
-                formRef.current.setFormValue({
-                  InputNumber: 2,
-                  Select: 'Apple',
-                  Switch: true,
-                  Rate: 5,
-                }),
+              formRef.current.setFormValue({
+                InputNumber: 2,
+                Select: 'Apple',
+                Switch: true,
+                Rate: 5,
+              }),
+          },
+          {
+            label: '重置表单',
+            onClick: () => {
+              setFormData({});
+              formRef.current.resetFields();
             },
-            {
-              label: '重置表单',
-              onClick: () => {
-                setFormData({});
-                formRef.current.resetFields();
-              },
-            },
-          ]}
-        />
-      </div>
+          },
+        ]}
+      />
+      {JSON.stringify(formData) !== '{}' && (
+        <div style={{ marginTop: 24 }}>{JSON.stringify(formData)}</div>
+      )}
+    </Fragment>
+  );
+};
+```
 
-      {JSON.stringify(formData) !== '{}' && <div>{JSON.stringify(formData)}</div>}
+## 表单布局
+
+表单有两种布局。
+
+```tsx
+import React, { Fragment, useState } from 'react';
+import { FormPro, ButtonGroup } from 'ziw';
+export default () => {
+  const [formLayout, setFormLayout] = useState('vertical');
+  return (
+    <Fragment>
+      <ButtonGroup
+        button={[
+          { label: 'vertical', onClick: () => setFormLayout('vertical') },
+          { label: 'horizontal', type: 'primary', onClick: () => setFormLayout('horizontal') },
+        ]}
+      />
+      <FormPro
+        layout={formLayout}
+        style={{ marginTop: 24 }}
+        columns={[
+          { key: 'InputA', label: 'Field A', placeholder: 'placeholder', span: 12 },
+          { key: 'InputB', label: 'Field B', placeholder: 'placeholder', span: 12 },
+        ]}
+      />
+    </Fragment>
+  );
+};
+```
+
+## 表单尺寸
+
+设置表单组件尺寸，仅对 自带 type 组件有效。
+
+```tsx
+import React, { Fragment, useState } from 'react';
+import { FormPro, ButtonGroup } from 'ziw';
+export default () => {
+  const [componentSize, setComponentSize] = useState('middle');
+  return (
+    <Fragment>
+      <ButtonGroup
+        button={[
+          { label: 'small', onClick: () => setComponentSize('small') },
+          { label: 'middle', type: 'primary', onClick: () => setComponentSize('middle') },
+          { label: 'large', type: 'large', onClick: () => setComponentSize('large') },
+        ]}
+      />
+      <FormPro
+        size={componentSize}
+        style={{ marginTop: 24 }}
+        columns={[
+          { key: 'Input', label: 'Input', placeholder: 'placeholder' },
+          { key: 'TimePicker', label: 'TimePicker', type: 'TimePicker' },
+          { key: 'DatePicker', label: 'DatePicker', type: 'DatePicker' },
+          { key: 'Select', label: 'Select', type: 'Select', options: [] },
+        ]}
+      />
+    </Fragment>
+  );
+};
+```
+
+## 表单禁用
+
+设置表单组件禁用，仅对 自带 type 组件有效。
+
+```tsx
+import React from 'react';
+import { FormPro } from 'ziw';
+export default () => {
+  return (
+    <FormPro
+      columns={[
+        { key: 'Input', label: 'Input', placeholder: 'placeholder', disabled: true },
+        { key: 'TimePicker', label: 'TimePicker', type: 'TimePicker', disabled: true },
+        { key: 'DatePicker', label: 'DatePicker', type: 'DatePicker', disabled: true },
+        { key: 'Select', label: 'Select', type: 'Select', options: [], disabled: true },
+      ]}
+    />
+  );
+};
+```
+
+## 自定义校验
+
+我们提供了 validateStatus help hasFeedback 等属性，你可以不通过 FormPro 自己定义校验的时机和内容。  
+validateStatus: 校验状态，可选 `success`, `warning`, `error`, `validating`。  
+hasFeedback：用于给输入框添加反馈图标。 help：设置校验文案。
+
+```tsx
+import React from 'react';
+import { FormPro, ButtonGroup } from 'ziw';
+export default () => {
+  const options = [
+    { label: 'Apple', value: 'Apple' },
+    { label: 'Pear', value: 'Pear' },
+  ];
+
+  const cascaderOptions = [
+    {
+      value: 'jiangsu',
+      label: 'Jiangsu',
+      children: [
+        {
+          value: 'nanjing',
+          label: 'Nanjing',
+        },
+      ],
+    },
+  ];
+
+  const selectTablecolumns = [
+    {
+      title: '编号',
+      dataIndex: 'value',
+      align: 'center',
+    },
+    {
+      title: '名字',
+      dataIndex: 'label',
+      align: 'center',
+    },
+  ];
+
+  return (
+    <FormPro
+      initialValues={{ Input: '111' }}
+      columns={[
+        {
+          key: 'Input',
+          label: 'Input',
+          placeholder: 'placeholder',
+          validateStatus: 'error',
+          help: 'error',
+        },
+        {
+          key: 'SelectTable',
+          label: 'SelectTable',
+          type: 'SelectTable',
+          options,
+          allowClear: true,
+          placeholder: 'SelectTable',
+          columns: selectTablecolumns,
+          validateStatus: 'warning',
+        },
+        {
+          key: 'Select',
+          label: 'Select',
+          type: 'Select',
+          options,
+          allowClear: true,
+          rules: [{ required: true, message: 'Please Select your Select!' }],
+          hasFeedback: true,
+          validateStatus: 'success',
+        },
+        {
+          key: 'Cascader',
+          label: 'Cascader',
+          type: 'Cascader',
+          options: cascaderOptions,
+          hasFeedback: true,
+          validateStatus: 'warning',
+        },
+        {
+          key: 'TimePicker',
+          label: 'TimePicker',
+          type: 'TimePicker',
+          hasFeedback: true,
+          validateStatus: 'error',
+        },
+        {
+          key: 'DatePicker',
+          label: 'DatePicker',
+          type: 'DatePicker',
+          hasFeedback: true,
+          validateStatus: 'validating',
+        },
+      ]}
+    />
+  );
+};
+```
+
+## 动态校验规则
+
+根据不同情况执行不同的校验规则。
+
+```tsx
+import React, { Fragment, useRef, useState } from 'react';
+import { FormPro, ButtonGroup } from 'ziw';
+export default () => {
+  const formRef = useRef();
+  const [formData, setFormData] = useState({});
+
+  const options = [
+    { label: 'Apple', value: 'Apple' },
+    { label: 'Pear', value: 'Pear' },
+  ];
+
+  const selectTablecolumns = [
+    {
+      title: '编号',
+      dataIndex: 'value',
+      align: 'center',
+    },
+    {
+      title: '名字',
+      dataIndex: 'label',
+      align: 'center',
+    },
+  ];
+
+  return (
+    <Fragment>
+      <FormPro
+        ref={formRef}
+        columns={[
+          {
+            key: 'Input A',
+            label: 'Input A',
+            rules: [
+              {
+                required: true,
+                len: 3,
+                message: '请输入 3 位字符',
+              },
+            ],
+          },
+          {
+            key: 'Input B',
+            label: 'Input B',
+            rules: [
+              {
+                required: true,
+                max: 5,
+                message: '最多 5 位字符',
+              },
+            ],
+          },
+          {
+            key: 'Input C',
+            label: 'Input C',
+            rules: [
+              {
+                required: true,
+                min: 2,
+                message: '最少 2 位字符',
+              },
+            ],
+          },
+          {
+            key: 'Input D',
+            label: 'Input D',
+            rules: [
+              {
+                required: true,
+                pattern:
+                  /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
+                message: '手机号码输入不规范',
+              },
+            ],
+          },
+          {
+            options,
+            allowClear: true,
+            key: 'SelectTable',
+            type: 'SelectTable',
+            label: 'SelectTable',
+            placeholder: 'SelectTable',
+            columns: selectTablecolumns,
+            rules: [
+              {
+                required: true,
+                validator: (rule, value) => {
+                  if (!value) return Promise.reject(new Error('请选择～'));
+                  return Promise.resolve();
+                },
+              },
+            ],
+          },
+        ]}
+      />
+      <ButtonGroup
+        button={[
+          {
+            label: '提交表单',
+            type: 'primary',
+            onClick: async () => {
+              const data = await formRef.current.getFormValue();
+              if (!data) return;
+              setFormData(data);
+            },
+          },
+          {
+            label: '重置表单',
+            onClick: () => {
+              setFormData({});
+              formRef.current.resetFields();
+            },
+          },
+        ]}
+      />
+      {JSON.stringify(formData) !== '{}' && (
+        <div style={{ marginTop: 24 }}>{JSON.stringify(formData)}</div>
+      )}
     </Fragment>
   );
 };
@@ -135,21 +473,15 @@ export default () => {
       <FormPro
         type="searchForm"
         displayPre={3}
-        initialValues={{ Input: '111' }}
         onSubmit={(data) => setFormData(data)}
         onReset={(data) => setFormData({})}
         columns={[
-          { key: 'TextArea', label: 'TextArea', type: 'TextArea', span: 12 },
-          { key: 'Input', label: 'Input', placeholder: 'placeholder', order: 1 },
-          { key: 'InputNumber', label: 'InputNumber', type: 'InputNumber' },
-          {
-            key: 'Select',
-            label: 'Select',
-            type: 'Select',
-            options,
-            allowClear: true,
-            rules: [{ required: true, message: 'Please Select your Select!' }],
-          },
+          { key: 'Input A', label: 'Input A', placeholder: 'placeholder' },
+          { key: 'Input B', label: 'Input B', placeholder: 'placeholder' },
+          { key: 'Input C', label: 'Input C', placeholder: 'placeholder' },
+          { key: 'Input D', label: 'Input D', placeholder: 'placeholder' },
+          { key: 'Input E', label: 'Input E', placeholder: 'placeholder' },
+          { key: 'Input F', label: 'Input F', placeholder: 'placeholder' },
         ]}
       />
       {JSON.stringify(formData) !== '{}' && <div>{JSON.stringify(formData)}</div>}
@@ -157,27 +489,3 @@ export default () => {
   );
 };
 ```
-
-## API
-
-| 参数          | 说明                                     | 类型                   | 默认值 |
-| ------------- | ---------------------------------------- | ---------------------- | ------ |
-| type          | 设置表单类型                             | `searchForm` \| `form` | `form` |
-| columns       | 表格列的配置描述，具体项见下表           | `ColumnsType[]`        | -      |
-| displayPre    | 只显示前面部分查询条件                   | `number`               | -      |
-| initialValues | 表单默认值，只有初始化以及重置时生效     | `object`               | -      |
-| onSubmit      | 仅在 `type = searchForm` 时生效 查询事件 | `function(data)`       | -      |
-| onReset       | 仅在 `type = searchForm` 时生效 重置事件 | `function()`           | -      |
-
-## Column
-
-列描述数据对象，是 columns 中的一项，Column 使用相同的 API。
-
-| 参数  | 说明                                      | 类型            | 默认值 |
-| ----- | ----------------------------------------- | --------------- | ------ |
-| type  | 设置控件类型                              | string          | Input  |
-| key   | 设置了唯一的 key                          | string          | -      |
-| label | `label` 标签的文本                        | `ColumnsType[]` | -      |
-| span  | 栅格占位格数，为 0 时相当于 display: none | number          | 6      |
-| order | 元素的排列顺序. 数值越小，排列越靠前      | number          | 0      |
-| rules | 校验规则，设置字段的校验逻辑              | Rule[]          | -      |

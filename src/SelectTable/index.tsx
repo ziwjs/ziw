@@ -6,12 +6,12 @@ import { SelectTableProps, LabeledValue } from '../types/SelectTable';
 export default function SelectTable(props: SelectTableProps) {
   const {
     mode,
-    columns,
     loading,
-    options,
     onClear,
     onChange,
     onDeselect,
+    columns = [],
+    options = [],
     value: _value,
     dropdownStyle,
     labelInValue = false,
@@ -42,8 +42,10 @@ export default function SelectTable(props: SelectTableProps) {
     labelInValue,
     dataSource: newOptions,
   };
+
   const isMode = mode === 'multiple' || mode === 'tags';
   const isOnChange = typeof onChange === 'function';
+
   // Select props
   const payload = {
     mode,
@@ -91,12 +93,5 @@ export default function SelectTable(props: SelectTableProps) {
       typeof onDropdownVisibleChange === 'function' && onDropdownVisibleChange(open);
     },
   };
-  return (
-    <>
-      <Select {...payload} />
-      {/* <Select style={{width:100}} showSearch options={options} onChange={(value,option,)=>{
-    console.log(value,option)
-   }}/> */}
-    </>
-  );
+  return <Select {...payload} />;
 }

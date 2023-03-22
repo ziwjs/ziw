@@ -3,20 +3,13 @@ import { Button, Space } from 'antd';
 import { ButtonGroupProps } from '../types/ButtonGroup';
 
 const Index = (props: ButtonGroupProps) => {
-  const {
-    button,
-    splitSize = 'middle',
-    split = null,
-    direction = 'horizontal',
-    wrap = true,
-    size = 'middle',
-  } = props;
+  const { button, splitSize = 'middle', wrap = true, size = 'middle', ...others } = props;
 
   return (
-    <Space size={splitSize} split={split} direction={direction} wrap={wrap}>
+    <Space {...others} size={splitSize} wrap={wrap}>
       {Array.isArray(button) &&
-        button.map(({ label, size: _size, ...other }, index) => (
-          <Button key={index} {...other} size={_size ? _size : size}>
+        button.map(({ label, size: _size, ...others }, index) => (
+          <Button key={index} {...others} size={_size || size}>
             {label || ''}
           </Button>
         ))}

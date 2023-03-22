@@ -1,13 +1,6 @@
 @zntd-text-color: #ffffff;
+
 .rowBox {
-  display: table !important;
-  width: 100%;
-  margin: 0 !important;
-  .leftCol {
-    float: left;
-    width: 100%;
-    height: max-content;
-  }
   .rightCol {
     display: flex;
     align-items: center;
@@ -18,14 +11,10 @@
     height: auto;
     height: max-content;
     margin-left: auto;
+
     .minWidth {
       min-width: 48px;
       margin-left: 8px;
-    }
-  }
-  :global {
-    #TextArea {
-      padding: 3px 11px;
     }
   }
 }
@@ -36,9 +25,11 @@ html[data-prefers-color='dark'] {
     .ant-radio-wrapper {
       color: @zntd-text-color;
     }
+
     .ant-switch {
       background-color: @zntd-text-color;
     }
+
     .ant-switch-checked {
       background-color: #1890ff;
     }

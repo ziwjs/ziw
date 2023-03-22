@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Descriptions } from 'antd';
+import { Descriptions, Row, Col } from 'antd';
+
 export interface DetailsProps {
   dataSource: { [key: string]: any };
   columns: {
@@ -8,11 +9,13 @@ export interface DetailsProps {
     span?: number;
     render?: (value: any, record: any) => React.ReactNode;
   }[];
-  bordered?: boolean;
-  column?: number;
+  gutter?: number;
 }
 const Index = (props: DetailsProps) => {
-  const { columns, dataSource, column = 4, bordered = false, ...others } = props;
+  const { columns, dataSource, gutter = 4, ...others } = props;
+
+  const dataList =
+    typeof columns === 'function' ? columns() : Array.isArray(columns) ? columns : [];
 
   const [screenWidth, setScreenWidth] = useState(0);
 
@@ -23,15 +26,21 @@ const Index = (props: DetailsProps) => {
   }, []);
 
   return (
-    <Descriptions {...others} column={screenWidth < 992 ? 1 : column}>
-      {Array.isArray(columns) &&
-        columns.map((item, _index) => {
-          const { key, label, span = 1, render } = item;
+    <Descriptions {...others} column={screenWidth < 992 ? 1 : gutter}>
+      {Array.isArray(dataList) &&
+        dataList.map(({ label, key, span = 1, render, ...others }) => {
           return (
-            <Descriptions.Item key={key} label={label} span={screenWidth < 992 ? 1 : span}>
+            <Descriptions.Item
+              key={key}
+              label={label}
+              span={screenWidth < 992 ? 1 : span}
+              {...others}
+            >
               {
                 /* 兼容 render 函数调用 */
-                typeof render === 'function' ? render(dataSource[key], dataSource) : dataSource[key]
+                typeof render === 'function'
+                  ? render(dataSource[key], dataSource)
+                  : dataSource[key] || ' '
               }
             </Descriptions.Item>
           );
