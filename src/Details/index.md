@@ -65,10 +65,10 @@ export default () => (
     title="User Info"
     dataSource={{
       weight: '90',
-      UserName: 'Zhou Maomao',
-      Telephone: 1810000000,
-      Live: '	Hangzhou, Zhejiang',
-      Address: 'No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China',
+      userName: 'Zhou Maomao',
+      telephone: 1810000000,
+      live: '	Hangzhou, Zhejiang',
+      address: 'No. 18, Wantang Road, Xihu District, Hangzhou, Zhejiang, China',
     }}
     columns={[
       { key: 'weight', label: 'Weight' },
