@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Select } from 'antd';
 import DropdownRender from './dropdownRender';
 import { SelectTableProps, LabeledValue } from '../types/SelectTable';
+import { isFunction, isFunctionReturnArray } from '../utils';
 
 export default function SelectTable(props: SelectTableProps) {
   const {
@@ -27,24 +28,58 @@ export default function SelectTable(props: SelectTableProps) {
   // 控制输入框的值
   let [value, setValue] = useState(_value);
 
-  const newOptions = typeof options === 'function' ? options() : options;
-
   // DropdownRender props
   const dropdownRenderProps = {
     mode,
     value,
-    columns,
     setOpen,
-    setValue,
     loading,
     onChange,
+    setValue,
     fieldNames,
     labelInValue,
-    dataSource: newOptions,
+    columns: isFunctionReturnArray(columns),
+    dataSource: isFunctionReturnArray(options),
   };
 
-  const isMode = mode === 'multiple' || mode === 'tags';
-  const isOnChange = typeof onChange === 'function';
+  // 是否多选
+  const isMode = ['multiple', 'tags'].includes(mode);
+
+  // 清除内容时回调
+  const myOnClear = () => {
+    const clerar = setTimeout(() => {
+      if (isMode) {
+        setValue([]);
+        isFunction(onChange, [], []);
+      } else {
+        setValue(undefined);
+        isFunction(onChange, undefined, undefined);
+      }
+      isFunction(onClear);
+    }, 0);
+    return () => clearTimeout(clerar);
+  };
+
+  // 展开下拉菜单的回调
+  const myOnDropdownVisibleChange = (open: boolean) => {
+    setOpen(open);
+    isFunction(onDropdownVisibleChange, open);
+  };
+
+  // 取消选中时调用，参数为选中项的 value (或 key) 值，仅在 multiple 或 tags 模式下生效
+  const myOnDeselect = (record: string | number | LabeledValue, option: any) => {
+    if (isMode) {
+      if (labelInValue) {
+        const { value: _value, label } = record;
+        setValue(value.filter((item: LabeledValue) => item?.value !== _value));
+        isFunction(onChange, { [fieldNames?.value]: _value, [fieldNames?.label]: label }, option);
+      } else {
+        setValue(value.filter((item: string | number) => item !== record));
+        isFunction(onChange, record, option);
+      }
+    }
+    isFunction(onDeselect, record, option);
+  };
 
   // Select props
   const payload = {
@@ -54,44 +89,16 @@ export default function SelectTable(props: SelectTableProps) {
     fieldNames,
     placeholder,
     labelInValue,
-    options: newOptions,
     showSearch: true,
+    options: isFunctionReturnArray(options),
     ...otherPrors,
     open,
+    onClear: myOnClear,
+    onDeselect: myOnDeselect,
     defaultActiveFirstOption: false,
     dropdownStyle: { padding: 12, ...dropdownStyle },
+    onDropdownVisibleChange: myOnDropdownVisibleChange,
     dropdownRender: () => <DropdownRender {...dropdownRenderProps} />,
-    onClear: () => {
-      const clerar = setTimeout(() => {
-        if (isMode) {
-          setValue([]);
-          isOnChange && onChange([], []);
-        } else {
-          setValue(undefined);
-          isOnChange && onChange(undefined, undefined);
-        }
-        typeof onClear === 'function' && onClear();
-      }, 0);
-      return () => clearTimeout(clerar);
-    },
-    onDeselect: (record: string | number | LabeledValue, option) => {
-      if (isMode) {
-        if (labelInValue) {
-          const { value: _value, label } = record;
-          setValue(value.filter((item: LabeledValue) => item?.value !== _value));
-          isOnChange &&
-            onChange({ [fieldNames?.value]: _value, [fieldNames?.label]: label }, option);
-        } else {
-          setValue(value.filter((item: string | number) => item !== record));
-          isOnChange && onChange(record, option);
-        }
-      }
-      typeof onDeselect === 'function' && onDeselect(record, option);
-    },
-    onDropdownVisibleChange: (open: boolean) => {
-      setOpen(open);
-      typeof onDropdownVisibleChange === 'function' && onDropdownVisibleChange(open);
-    },
   };
   return <Select {...payload} />;
 }

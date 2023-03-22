@@ -176,7 +176,7 @@ export default () => {
   return (
     <>
       <ButtonGroup
-        style={{ margin: '0 10px' }}
+        style={{ marginLeft: 10 }}
         button={[
           { label: 'small', onClick: () => setSize('small') },
           { label: 'middle', type: 'primary', onClick: () => setSize('middle') },
