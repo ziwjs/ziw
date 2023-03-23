@@ -1,37 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { Descriptions } from 'antd';
-import { isFunctionReturnArray } from '../utils';
-import { DetailsProps } from '../types/Details';
+import { DetailsProps, Item } from '../types/Details';
+import { isFunctionReturnArray, isFunction } from '../utils';
 
 const Index = (props: DetailsProps) => {
   const { columns, dataSource, gutter = 4, ...others } = props;
 
-  const dataList = isFunctionReturnArray(columns) as DetailsProps['columns'];
+  const dataList: DetailsProps['columns'] = isFunctionReturnArray(columns);
 
-  const [screenWidth, setScreenWidth] = useState(0);
+  // 屏幕宽度
+  const [screenWidth, setScreenWidth] = useState<number>(0);
+
+  const handleResize = () => setScreenWidth(window.innerWidth);
 
   // 监听屏幕宽度变化
   useEffect(() => {
-    setScreenWidth(window.innerWidth);
-    window.onresize = () => setScreenWidth(window.innerWidth);
+    // 监听 resize 事件
+    window.addEventListener('resize', handleResize);
+    return () => {
+      // 移除监听
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
+
+  // 内容
+  const content = (render: Item['render'], dataSource: any, key: string) => {
+    if (typeof render === 'function') return render(dataSource[key], dataSource);
+    return dataSource[key] || ' ';
+  };
 
   return (
     <Descriptions {...others} column={screenWidth < 992 ? 1 : gutter}>
-      {dataList.map(({ label, key, span = 1, render, ...others }) => {
+      {dataList.map(({ label = '', key = '', span = 1, render, ...others }) => {
         return (
           <Descriptions.Item
-            key={key}
-            label={label}
-            span={screenWidth < 992 ? 1 : span}
             {...others}
+            key={key}
+            label={isFunction(label)}
+            span={screenWidth < 992 ? 1 : span}
           >
-            {
-              /* 兼容 render 函数调用 */
-              typeof render === 'function'
-                ? render(dataSource[key], dataSource)
-                : dataSource[key] || ' '
-            }
+            {content(render, dataSource, key)}
           </Descriptions.Item>
         );
       })}
