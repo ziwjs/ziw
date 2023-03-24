@@ -5,7 +5,7 @@ export interface ButtonGroupProps extends SpaceProps {
   // button: 按钮组
   button?: Array<ButtonProps & { label: string }>;
   // 设置按钮大小
-  size: Size;
+  size?: Size;
   // splitSize: 间距大小
   splitSize?: Size | number;
 }

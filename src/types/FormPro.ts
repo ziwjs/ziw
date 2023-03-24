@@ -1,22 +1,35 @@
+import type { FormProps } from 'antd';
 import type { Rule } from 'antd/es/form';
-export interface FormProProps {
+
+// item 类型
+export declare type Type =
+  | 'Rate'
+  | 'Input'
+  | 'Select'
+  | 'Switch'
+  | 'Slider'
+  | 'Cascader'
+  | 'TextArea'
+  | 'TimePicker'
+  | 'DatePicker'
+  | 'RadioGroup'
+  | 'RangePicker'
+  | 'InputNumber'
+  | 'SelectTable'
+  | 'CheckboxGroup'
+  | undefined;
+
+// 布局
+export declare type Layout = 'horizontal' | 'vertical' | undefined;
+export interface FormProProps extends FormProps {
+  // 显示列数
+  displayPre?: number;
+  // 表单类型
   type?: 'searchForm' | 'form';
-  displayPre?: Number;
-  initialValues: object;
+  // 表单布局
+  layout?: Layout;
   columns?: {
-    type?:
-      | 'Checkbox'
-      | 'CheckboxGroup'
-      | 'DatePicker'
-      | 'RangePicker'
-      | 'TextArea'
-      | 'InputNumber'
-      | 'Radio'
-      | 'RadioGroup'
-      | 'Select'
-      | 'Switch'
-      | 'TimePicker'
-      | undefined;
+    type?: Type;
     label?: string;
     key: string;
     rules: Rule[];
