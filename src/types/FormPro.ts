@@ -1,5 +1,5 @@
 import type { FormProps } from 'antd';
-import type { Rule } from 'antd/es/form';
+import type { FormItemProps } from 'antd/lib/form/FormItem';
 
 // item 类型
 export declare type Type =
@@ -28,13 +28,11 @@ export interface FormProProps extends FormProps {
   type?: 'searchForm' | 'form';
   // 表单布局
   layout?: Layout;
-  columns?: {
-    type?: Type;
-    label?: string;
-    key: string;
-    rules: Rule[];
-    span: number;
-  }[];
+  columns?: FormItemProps &
+    {
+      type?: Type;
+      key: string;
+    }[];
   onSubmit: (data: any) => void;
   onReset: () => void;
 }

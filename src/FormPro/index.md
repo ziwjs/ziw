@@ -490,28 +490,22 @@ export default () => {
 值越小，越靠前。
 
 ```tsx
-import React, { Fragment, useState } from 'react';
+import React from 'react';
 import { FormPro } from 'ziw';
 export default () => {
-  const [formData, setFormData] = useState({});
   return (
-    <Fragment>
-      <FormPro
-        type="searchForm"
-        displayPre={3}
-        onSubmit={(data) => setFormData(data)}
-        onReset={(data) => setFormData({})}
-        columns={[
-          { key: 'Input A', label: 'Input A', placeholder: 'placeholder', order: 3 },
-          { key: 'Input B', label: 'Input B', placeholder: 'placeholder', order: 2 },
-          { key: 'Input C', label: 'Input C', placeholder: 'placeholder' },
-          { key: 'Input D', label: 'Input D', placeholder: 'placeholder', order: 2 },
-          { key: 'Input E', label: 'Input E', placeholder: 'placeholder', order: 1 },
-          { key: 'Input F', label: 'Input F', placeholder: 'placeholder' },
-        ]}
-      />
-      {JSON.stringify(formData) !== '{}' && <div>{JSON.stringify(formData)}</div>}
-    </Fragment>
+    <FormPro
+      type="searchForm"
+      displayPre={3}
+      columns={[
+        { key: 'Input A', label: 'Input A', placeholder: 'placeholder', order: 3 },
+        { key: 'Input B', label: 'Input B', placeholder: 'placeholder', order: 2 },
+        { key: 'Input C', label: 'Input C', placeholder: 'placeholder' },
+        { key: 'Input D', label: 'Input D', placeholder: 'placeholder', order: 2 },
+        { key: 'Input E', label: 'Input E', placeholder: 'placeholder', order: 1 },
+        { key: 'Input F', label: 'Input F', placeholder: 'placeholder' },
+      ]}
+    />
   );
 };
 ```

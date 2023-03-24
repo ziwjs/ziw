@@ -4,6 +4,7 @@ import { DownOutlined, UpOutlined, ReloadOutlined, ZoomInOutlined } from '@ant-d
 import { ButtonGroup } from '../index';
 import type { FormProProps } from '../types/FormPro';
 import type { FormItemProps } from 'antd/lib/form/FormItem';
+import type { ButtonGroupProps } from '../types/ButtonGroup';
 import { asyncAwaitForms, _setFormValue } from './utils';
 import { caseType, layoutCase, sortColumns } from './item';
 import { isFunction, isFunctionReturnArray } from '../utils';
@@ -70,11 +71,41 @@ const Index = forwardRef((props: FormProProps, ref: any) => {
     };
   };
 
+  // 按钮组件参数
+  const buttonGroup: ButtonGroupProps = {
+    splitSize: 6,
+    button: [
+      {
+        type: 'primary',
+        label: '提交',
+        onClick: search,
+        htmlType: 'submit',
+        icon: <ZoomInOutlined />,
+      },
+      { label: '重置', onClick: reset, icon: <ReloadOutlined /> },
+    ],
+  };
+
+  // 搜索表单
+  const searchItem = () => (
+    <Col {...colItemLayout(-1, 6)} key="query" className={styles.rightCol}>
+      <Form.Item label=" ">
+        <ButtonGroup {...buttonGroup} />
+        {displayPre < sortColumns(isFunctionReturnArray(columns)).length && (
+          <a onClick={() => setExpand(!expand)} className={styles.minWidth}>
+            {expand ? <UpOutlined /> : <DownOutlined />}
+            {expand ? '收起' : '展开'}
+          </a>
+        )}
+      </Form.Item>
+    </Col>
+  );
+
   // 表单渲染
   const getFields = () => {
     // 用于存储表单控件
     const children: any[] = [];
-    //为了兼容函数调用
+    //兼容函数调用
     const _columns = sortColumns(isFunctionReturnArray(columns));
     if (Array.isArray(_columns)) {
       // 循环♻️遍历数组源
@@ -93,57 +124,27 @@ const Index = forwardRef((props: FormProProps, ref: any) => {
           },
           index,
         ) => {
-          const payload: FormItemProps = {
-            label,
-            rules,
-            help,
-            name: key,
-            hasFeedback,
-            validateStatus,
-          };
+          const payload: FormItemProps = { label, rules, help, hasFeedback, validateStatus };
           if (_type === 'TextArea') span = 24;
           // 解决控制 [antd: Switch] `value` is not a valid prop, do you mean `checked`? 错误
           if (_type === 'Switch') payload.valuePropName = 'checked';
           return children.push(
             <Col key={key} className={styles.leftCol} {...colItemLayout(index, span)}>
-              <Form.Item {...payload}>{caseType(_type, other)}</Form.Item>
+              <Form.Item {...payload} name={key}>
+                {caseType(_type, other)}
+              </Form.Item>
             </Col>,
           );
         },
       );
       // 查询模式添加一列显示
-      type === 'searchForm' &&
-        children.push(
-          <Col {...colItemLayout(-1, 6)} key="query" className={styles.rightCol}>
-            <Form.Item label=" ">
-              <ButtonGroup
-                splitSize={6}
-                button={[
-                  {
-                    type: 'primary',
-                    label: '查询',
-                    onClick: search,
-                    htmlType: 'submit',
-                    icon: <ZoomInOutlined />,
-                  },
-                  { label: '重置', onClick: reset, icon: <ReloadOutlined /> },
-                ]}
-              />
-              {displayPre < _columns.length && (
-                <a onClick={() => setExpand(!expand)} className={styles.minWidth}>
-                  {expand ? <UpOutlined /> : <DownOutlined />}
-                  {expand ? '收起' : '展开'}
-                </a>
-              )}
-            </Form.Item>
-          </Col>,
-        );
+      type === 'searchForm' && children.push(searchItem());
     }
     return children;
   };
 
   return (
-    <Form form={form} {...others} layout={layoutCase[layout] || 'vertical'} ref={ref} labelWrap>
+    <Form form={form} labelWrap {...others} layout={layoutCase[layout] || 'vertical'} ref={ref}>
       <Row gutter={{ sm: 24 }} className={styles.rowBox}>
         {getFields()}
       </Row>
