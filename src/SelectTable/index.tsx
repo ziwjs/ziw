@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Select } from 'antd';
 import DropdownRender from './dropdownRender';
-import { SelectTableProps, LabeledValue } from '../types/SelectTable';
+import type { SelectValue } from 'antd/lib/select';
+import type { SelectTableProps, DropdownRenderProps } from '../types/SelectTable';
 import { isFunction, isFunctionReturnArray } from '../utils';
 
 export default function SelectTable(props: SelectTableProps) {
@@ -26,10 +27,10 @@ export default function SelectTable(props: SelectTableProps) {
   let [open, setOpen] = useState(false);
 
   // 控制输入框的值
-  let [value, setValue] = useState(_value);
+  let [value, setValue] = useState(_value) as [SelectValue, (value: SelectValue) => void];
 
   // DropdownRender props
-  const dropdownRenderProps = {
+  const dropdownRenderProps: DropdownRenderProps = {
     mode,
     value,
     setOpen,
@@ -43,7 +44,7 @@ export default function SelectTable(props: SelectTableProps) {
   };
 
   // 是否多选
-  const isMode = ['multiple', 'tags'].includes(mode);
+  const isMode = ['multiple', 'tags'].includes(mode || '');
 
   // 清除内容时回调
   const myOnClear = () => {
@@ -67,18 +68,19 @@ export default function SelectTable(props: SelectTableProps) {
   };
 
   // 取消选中时调用，参数为选中项的 value (或 key) 值，仅在 multiple 或 tags 模式下生效
-  const myOnDeselect = (record: string | number | LabeledValue, option: any) => {
+  const myOnDeselect = (record: any) => {
     if (isMode) {
       if (labelInValue) {
         const { value: _value, label } = record;
-        setValue(value.filter((item: LabeledValue) => item?.value !== _value));
-        isFunction(onChange, { [fieldNames?.value]: _value, [fieldNames?.label]: label }, option);
+        Array.isArray(value) && value.filter;
+        setValue(value?.filter((item: SelectValue) => item?.value !== _value));
+        isFunction(onChange, { [fieldNames?.value]: _value, [fieldNames?.label]: label });
       } else {
         setValue(value.filter((item: string | number) => item !== record));
-        isFunction(onChange, record, option);
+        isFunction(onChange, record);
       }
     }
-    isFunction(onDeselect, record, option);
+    isFunction(onDeselect, record);
   };
 
   // Select props

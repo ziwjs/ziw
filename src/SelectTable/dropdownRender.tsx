@@ -6,28 +6,32 @@ import './style.less';
 
 export default function DropdownRender(props: DropdownRenderProps) {
   const {
+    mode,
     value,
     columns,
-    dataSource,
-    setValue,
     setOpen,
-    labelInValue,
-    mode,
-    fieldNames,
-    onChange,
     loading,
+    setValue,
+    onChange,
+    dataSource,
+    fieldNames,
+    labelInValue,
   } = props;
 
   // columns 是否存在 fieldNames?.value fieldNames?.label
   const dataIndexTrue = [fieldNames?.value, fieldNames?.label].every((item) =>
     columns.map((item: any) => item.dataIndex).includes(item),
   );
+
   // 多选存储选中的值
   let [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
   useEffect(() => {
     setSelectedRowKeys(isFunctionReturnArray(value));
   }, [value]);
+
+  // 选择模式 多选
+  const isMultiple = ['multiple', 'tags'].includes(mode || '');
 
   // 添加样式
   const rowClassName = (record: any) => {
@@ -37,20 +41,16 @@ export default function DropdownRender(props: DropdownRenderProps) {
     const { [fieldNames?.value]: _value, disabled = false } = record;
     // 禁用样式
     if (disabled) styleStr += 'disabled ';
-    // 选择模式 多选
-    const isMultiple = ['multiple', 'tags'].includes(mode);
-    // 是否添加样式
-    let isAddStyle = false;
+    // 添加样式
+    let addStyle = false;
     if (isMultiple) {
       // 开启 { value: string, label: ReactNode } 的格式
-      if (labelInValue)
-        isAddStyle = selectedRowKeys.find((item) => item?.value === _value) || false;
+      if (labelInValue) addStyle = selectedRowKeys.find((item) => item?.value === _value) || false;
       // 未开启 { value: string, label: ReactNode } 的格式
-      else isAddStyle = selectedRowKeys.find((item) => item === _value) || false;
+      else addStyle = selectedRowKeys.find((item) => item === _value) || false;
     } else
-      isAddStyle =
-        (_value && (value?.value || value) && _value === (value?.value || value)) || false;
-    isAddStyle ? (styleStr += 'ant-table-row-selected') : styleStr;
+      addStyle = (_value && (value?.value || value) && _value === (value?.value || value)) || false;
+    addStyle ? (styleStr += 'ant-table-row-selected') : styleStr;
     return styleStr;
   };
 
@@ -60,7 +60,7 @@ export default function DropdownRender(props: DropdownRenderProps) {
     // 禁用不可点击
     if (disabled) return;
     // 选择模式 多选
-    if (['multiple', 'tags'].includes(mode)) {
+    if (isMultiple) {
       let _selectedRowKeys = [...selectedRowKeys];
       // labelInValue : 是否开启 object 模式
       if (labelInValue) {

@@ -21,6 +21,7 @@ export declare type Type =
 
 // 布局
 export declare type Layout = 'horizontal' | 'vertical' | undefined;
+
 export interface FormProProps extends FormProps {
   // 显示列数
   displayPre?: number;
