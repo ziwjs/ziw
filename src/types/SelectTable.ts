@@ -1,7 +1,7 @@
 import type { ColumnType } from 'antd/lib/table';
 import type { SelectProps, SelectValue, InternalSelectProps } from 'antd/lib/select';
 export interface SelectTableProps extends SelectProps {
-  columns: ColumnType<any>[];
+  columns?: ColumnType<any>[];
 }
 export interface DropdownRenderProps {
   // 加载中状态
@@ -23,5 +23,5 @@ export interface DropdownRenderProps {
   // 自定义节点 label、value、options 的字段
   fieldNames?: SelectProps['fieldNames'];
   // 表格列配置
-  columns: ColumnType<any>[];
+  columns?: ColumnType<any>[];
 }

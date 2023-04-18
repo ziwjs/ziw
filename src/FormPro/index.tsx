@@ -1,19 +1,17 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { Col, Form, Row } from 'antd';
-import { DownOutlined, UpOutlined, ReloadOutlined, ZoomInOutlined } from '@ant-design/icons';
 import { ButtonGroup } from '../index';
-import type { FormProProps } from '../types/FormPro';
-import type { FormItemProps } from 'antd/lib/form/FormItem';
-import type { ButtonGroupProps } from '../types/ButtonGroup';
 import { asyncAwaitForms, _setFormValue } from './utils';
 import { caseType, layoutCase, sortColumns } from './item';
 import { isFunction, isFunctionReturnArray } from '../utils';
+import type { Ref } from 'react';
+import type { FormItemProps } from 'antd/lib/form';
+import type { FormProProps, Column } from '../types/FormPro';
+import type { ButtonGroupProps } from '../types/ButtonGroup';
+import { DownOutlined, UpOutlined, ReloadOutlined, ZoomInOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
-const Index = forwardRef((props: FormProProps, ref: any) => {
-  const [form] = Form.useForm();
-
-  // 父组件传递参数
+const Index = forwardRef((props: FormProProps, ref?: Ref<any>) => {
   const {
     onReset,
     onSubmit,
@@ -24,128 +22,121 @@ const Index = forwardRef((props: FormProProps, ref: any) => {
     ...others
   } = props;
 
-  // 搜索表单控制是否展开
+  const [form] = Form.useForm();
+
   const [expand, setExpand] = useState(false);
-  // 显示 form-list 控件 Col布局参数
-  const [isDisplayPre] = useState(typeof displayPre === 'number' && displayPre > 0);
 
-  // ref 暴露方法
-  useImperativeHandle(ref, () => ({
-    ...(ref?.current || {}),
-    getFormValue: async () => await asyncAwaitForms(ref?.current),
-    setFormValue: (target = {}) => _setFormValue(ref?.current, target),
-  }));
+  const _columns: Column[] = sortColumns(isFunctionReturnArray(columns));
 
-  // 查询按钮事件
+  useImperativeHandle(
+    ref,
+    () => ({
+      ...(ref?.current || {}),
+      getFormValue: async () => await asyncAwaitForms(ref?.current),
+      setFormValue: (target = {}) => _setFormValue(ref?.current, target),
+    }),
+    [ref],
+  );
+
   const search = async () => {
-    if (!ref) {
-      // 获取表单中的数据
-      const formData = form.getFieldsValue();
-      // 触发验证
-      const validate = await form.validateFields();
-      if (Array.isArray(validate.errorFields)) return;
-      isFunction(onSubmit, formData);
-    }
-    // 获取表单中的数据
-    const data = await asyncAwaitForms(ref?.current);
-    if (!data) return;
-    isFunction(onSubmit, data);
+    const formData = form.getFieldsValue();
+    const validate = await form.validateFields();
+    if (Array.isArray(validate.errorFields)) return;
+    isFunction(onSubmit, formData);
   };
 
-  // 重置按钮事件
   const reset = () => {
-    if (ref) isFunction(ref?.current?.resetFields);
-    else form.resetFields();
-    isFunction(onReset);
+    form.resetFields();
+    const formData = form.getFieldsValue();
+    isFunction(onReset, formData);
   };
 
-  // 显示 form-list 控件 Col布局参数
   const colItemLayout = (index: number, num: number) => {
-    const showFun = (_num: number) => (isDisplayPre && displayPre <= index && !expand ? 0 : _num);
+    const showNum =
+      typeof displayPre === 'number' && displayPre > 0 && displayPre <= index && !expand;
+    const getColNum = (maxNum: number) => (showNum ? 0 : maxNum);
     return {
-      xl: showFun(num),
-      lg: showFun(8),
-      md: showFun(12),
-      sm: showFun(24),
-      xs: showFun(24),
+      xl: getColNum(num),
+      lg: getColNum(8),
+      md: getColNum(12),
+      sm: getColNum(24),
+      xs: getColNum(24),
     };
   };
 
-  // 按钮组件参数
   const buttonGroup: ButtonGroupProps = {
     splitSize: 6,
     button: [
       {
-        type: 'primary',
         label: '提交',
+        type: 'primary',
         onClick: search,
         htmlType: 'submit',
         icon: <ZoomInOutlined />,
       },
       { label: '重置', onClick: reset, icon: <ReloadOutlined /> },
+      {
+        type: 'text',
+        label: expand ? '收起' : '展开',
+        onClick: () => setExpand(!expand),
+        icon: expand ? <UpOutlined /> : <DownOutlined />,
+      },
     ],
   };
 
-  // 搜索表单
-  const searchItem = () => (
-    <Col {...colItemLayout(-1, 6)} key="query" className={styles.rightCol}>
-      <Form.Item label=" ">
-        <ButtonGroup {...buttonGroup} />
-        {displayPre < sortColumns(isFunctionReturnArray(columns)).length && (
-          <a onClick={() => setExpand(!expand)} className={styles.minWidth}>
-            {expand ? <UpOutlined /> : <DownOutlined />}
-            {expand ? '收起' : '展开'}
-          </a>
-        )}
-      </Form.Item>
-    </Col>
-  );
+  const searchItem = () => {
+    const showExpand = displayPre > _columns.length;
+    if (showExpand) buttonGroup.button?.pop();
+    return (
+      <Col key="query" {...colItemLayout(-1, 6)} className={styles.rightCol}>
+        <Form.Item label=" ">
+          <ButtonGroup {...buttonGroup} />
+        </Form.Item>
+      </Col>
+    );
+  };
 
-  // 表单渲染
   const getFields = () => {
-    // 用于存储表单控件
-    const children: any[] = [];
-    //兼容函数调用
-    const _columns = sortColumns(isFunctionReturnArray(columns));
-    if (Array.isArray(_columns)) {
-      // 循环♻️遍历数组源
-      _columns.forEach(
-        (
-          {
-            key,
-            help,
-            rules,
-            span = 6,
-            type: _type,
-            label = ' ',
-            hasFeedback,
-            validateStatus,
-            ...other
-          },
-          index,
-        ) => {
-          const payload: FormItemProps = { label, rules, help, hasFeedback, validateStatus };
-          if (_type === 'TextArea') span = 24;
-          // 解决控制 [antd: Switch] `value` is not a valid prop, do you mean `checked`? 错误
-          if (_type === 'Switch') payload.valuePropName = 'checked';
-          return children.push(
-            <Col key={key} className={styles.leftCol} {...colItemLayout(index, span)}>
-              <Form.Item {...payload} name={key}>
-                {caseType(_type, other)}
-              </Form.Item>
-            </Col>,
-          );
-        },
-      );
-      // 查询模式添加一列显示
-      type === 'searchForm' && children.push(searchItem());
-    }
-    return children;
+    return [
+      ..._columns.map((column, index) => {
+        let {
+          key,
+          help,
+          rules,
+          span = 6,
+          type: _type,
+          label = ' ',
+          hasFeedback,
+          validateStatus,
+          ...rest
+        } = column;
+        const payload: FormItemProps = { label, rules, help, hasFeedback, validateStatus };
+        if (_type === 'TextArea') span = 24;
+        // 解决控制 [antd: Switch] `value` is not a valid prop, do you mean `checked`
+        if (_type === 'Switch') payload.valuePropName = 'checked';
+        return (
+          <Col key={key} className={styles.leftCol} {...colItemLayout(index, span)}>
+            <Form.Item {...payload} name={key}>
+              {caseType(_type, rest)}
+            </Form.Item>
+          </Col>
+        );
+      }),
+      ...(type === 'searchForm' ? [searchItem()] : []),
+    ];
+  };
+
+  const formProps = {
+    form,
+    labelWrap: true,
+    ...others,
+    ref,
+    layout: layoutCase[layout] ?? 'vertical',
   };
 
   return (
-    <Form form={form} labelWrap {...others} layout={layoutCase[layout] || 'vertical'} ref={ref}>
-      <Row gutter={{ sm: 24 }} className={styles.rowBox}>
+    <Form {...formProps}>
+      <Row gutter={24} className={styles.rowBox}>
         {getFields()}
       </Row>
     </Form>

@@ -268,7 +268,6 @@ export default () => {
 
   return (
     <FormPro
-      initialValues={{ Input: '111' }}
       columns={[
         {
           key: 'Input',
@@ -509,3 +508,37 @@ export default () => {
   );
 };
 ```
+
+## API
+
+| 属性名 | 类型 | 是否必须 | 默认值 | 描述 |
+| --- | --- | --- | --- | --- |
+| columns | Column | 否 | [] | 表单项配置数组 |
+| type | string | 否 | `form` | 表单类型，可选值有：`form`、`searchForm` |
+| displayPre | number | 否 | 0 | 展示表单项数量，默认为 0，即全部展示 |
+| onReset | function | 否 | - | 表单重置的回调函数,`type = searchForm` 生效 |
+| onSubmit | function | 否 | - | 表单提交的回调函数,`type = searchForm` 生效 |
+| layout | string | 否 | `vertical` | 表单布局，可选值有：`vertical`、`horizontal` |
+| 其他属性 | 参见 [Antd Form](https://ant.design/components/form-cn#api) 组件参数 | - | - | 所有其他属性都会传递给 `Form` 组件。 |
+
+### Column
+
+| 属性名 | 类型 | 是否必须 | 默认值 | 描述 |
+| --- | --- | --- | --- | --- |
+| key | string | 是 | - | 表单项的唯一标识 |
+| label | string | 否 | - | 表单项的标签文本 |
+| type | string | 否 | `Input` | 表单项的类型，可选值有：`Type` |
+| order | number | 否 | - | 值越小排列越靠前 |
+| 其他属性 | 参见 [Antd Form](https://ant.design/components/form-cn#formitem) 组件参数 | - | - | 所有其他属性都会传递给 `Form.Item` 组件。 |
+
+### Type
+
+`'Input' | 'Select' | 'Switch' | 'Slider' | 'Cascader' | 'RadioGroup' | 'Rate' | 'TextArea' | 'CheckboxGroup' | 'TimePicker' | 'DatePicker' | 'RangePicker' | 'InputNumber' | 'SelectTable'`
+
+### 表单方法
+
+| 方法名 | 描述 |
+| --- | --- |
+| getFormValue() | 异步获取表单数据，返回一个 Promise 对象 |
+| setFormValue(object) | 设置表单数据的值，参数为一个对象 |
+| 其他方法 | 参见 [Antd Form](https://ant.design/components/form-cn#forminstance) FormInstance 参数 |

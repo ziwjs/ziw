@@ -161,3 +161,26 @@ export default () => (
   />
 );
 ```
+
+## API
+
+| 属性名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `button` | `CustomButtonProps[]` | `[]` | 按钮配置数组。每个元素应该是一个 `CustomButtonProps` 对象。 |
+| `size` | `Size` | `'middle'` | 按钮的大小。如果按钮的 `size` 属性未定义，则使用该默认值。 |
+| `splitSize` | `Size \| number` | `'middle'` | 按钮之间的间距。 |
+| `wrap` | `boolean` | `true` | 是否自动换行。 |
+| 其他属性 | 参见 [Antd Space](https://ant.design/components/space-cn#space) 组件参数 | - | 所有其他属性都会传递给 `Space` 组件。 |
+
+### CustomButtonProps
+
+| 属性名 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `label` | `React.ReactNode` | `''` | 按钮显示的文本。 |
+| `size` | `'large' \| 'middle' \| 'small'` | - | 按钮的大小。如果未定义，则会使用 `ButtonGroup` 组件的 `size` 属性。 |
+| `key` | `string` | - | 按钮的唯一标识符。如果未定义，则会生成一个默认值。 |
+| 其他属性 | 参见 [Antd Button](https://ant.design/components/button-cn#api) 组件参数 | - | 所有其他属性都会传递给 `Button` 组件。 |
+
+### Size
+
+`'small' | 'middle' | 'large'`

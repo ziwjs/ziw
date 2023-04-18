@@ -5,7 +5,7 @@ import type { SelectValue } from 'antd/lib/select';
 import type { SelectTableProps, DropdownRenderProps } from '../types/SelectTable';
 import { isFunction, isFunctionReturnArray } from '../utils';
 
-export default function SelectTable(props: SelectTableProps) {
+const SelectTable = (props: SelectTableProps) => {
   const {
     mode,
     loading,
@@ -103,4 +103,5 @@ export default function SelectTable(props: SelectTableProps) {
     dropdownRender: () => <DropdownRender {...dropdownRenderProps} />,
   };
   return <Select {...payload} />;
-}
+};
+export default SelectTable;

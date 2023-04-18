@@ -1,20 +1,28 @@
 import React from 'react';
 import { Button, Space } from 'antd';
-import type { ButtonGroupProps } from '../types/ButtonGroup';
+import type { ButtonGroupProps, CustomButtonProps } from '../types/ButtonGroup';
 
-const Index = (props: ButtonGroupProps) => {
-  const { button, size = 'middle', splitSize = 'middle', wrap = true, ...others } = props;
+const ButtonGroup: React.FC<ButtonGroupProps> = ({
+  wrap = true,
+  button = [],
+  size = 'middle',
+  splitSize = 'middle',
+  ...others
+}) => {
+  const renderButton = (
+    { label = '', size: customSize, key, ...rest }: CustomButtonProps,
+    index: number,
+  ) => (
+    <Button key={`button_${key || index}`} {...rest} size={customSize || size}>
+      {label}
+    </Button>
+  );
 
   return (
     <Space {...others} size={splitSize} wrap={wrap}>
-      {Array.isArray(button) &&
-        button.map(({ label = '', size: _size, ...others }, index) => (
-          <Button key={index} {...others} size={_size || size}>
-            {label}
-          </Button>
-        ))}
+      {Array.isArray(button) && button.map((item, index) => renderButton(item, index))}
     </Space>
   );
 };
 
-export default Index;
+export default ButtonGroup;

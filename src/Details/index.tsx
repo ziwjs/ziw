@@ -1,45 +1,41 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import { Descriptions } from 'antd';
-import { DetailsProps, Item } from '../types/Details';
 import { isFunctionReturnArray, isFunction } from '../utils';
+import type { DetailsProps, ColumnItem } from '../types/Details';
 
-const Index = (props: DetailsProps) => {
-  const { columns, dataSource, gutter = 4, ...others } = props;
+declare type Type = 'label' | 'render';
 
-  const dataList: DetailsProps['columns'] = isFunctionReturnArray(columns);
+const Details: FC<DetailsProps> = ({ columns = [], dataSource = {}, gutter = 4, ...others }) => {
+  const dataList = isFunctionReturnArray(columns);
+  const [screenWidth, setScreenWidth] = useState<number>(window.innerWidth);
 
-  // 屏幕宽度
-  const [screenWidth, setScreenWidth] = useState<number>(0);
-
-  const handleResize = () => setScreenWidth(window.innerWidth);
-
-  // 监听屏幕宽度变化
   useEffect(() => {
-    // 监听 resize 事件
+    const handleResize = () => setScreenWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
-    return () => {
-      // 移除监听
-      window.removeEventListener('resize', handleResize);
-    };
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 内容
-  const content = (render: Item['render'], dataSource: any, key: string) => {
-    if (typeof render === 'function') return render(dataSource[key], dataSource);
-    return dataSource[key] || ' ';
+  const renderContent = (item: ColumnItem, type: Type = 'label') => {
+    const { key = '', label = '', render } = item;
+    const labelContent = isFunction(label) ? label() : label;
+    const renderContent = isFunction(render)
+      ? render(dataSource[key], dataSource)
+      : dataSource[key];
+    return type === 'label' ? labelContent : renderContent;
   };
 
   return (
     <Descriptions {...others} column={screenWidth < 992 ? 1 : gutter}>
-      {dataList.map(({ label = '', key = '', span = 1, render, ...others }) => {
+      {dataList.map((item: ColumnItem) => {
+        const { key = '', span = 1, ...others } = item;
         return (
           <Descriptions.Item
             {...others}
             key={key}
-            label={isFunction(label)}
+            label={renderContent(item, 'label')}
             span={screenWidth < 992 ? 1 : span}
           >
-            {content(render, dataSource, key)}
+            {renderContent(item, 'render')}
           </Descriptions.Item>
         );
       })}
@@ -47,4 +43,4 @@ const Index = (props: DetailsProps) => {
   );
 };
 
-export default Index;
+export default Details;

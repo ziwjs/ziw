@@ -1,11 +1,16 @@
-import type { ButtonProps, SpaceProps } from 'antd';
+import { ReactNode } from 'react';
+import type { SpaceProps, ButtonProps } from 'antd';
 
 export declare type Size = 'large' | 'middle' | 'small';
-export interface ButtonGroupProps extends SpaceProps {
-  // button: 按钮组
-  button?: Array<ButtonProps & { label: string }>;
-  // 设置按钮大小
+
+export type CustomButtonProps = ButtonProps & {
+  label?: ReactNode;
+  key?: string | number;
+};
+
+export type ButtonGroupProps = Omit<SpaceProps, 'size'> & {
   size?: Size;
-  // splitSize: 间距大小
+  wrap?: boolean;
   splitSize?: Size | number;
-}
+  button?: CustomButtonProps[];
+};
