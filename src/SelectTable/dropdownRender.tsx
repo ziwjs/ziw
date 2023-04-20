@@ -3,7 +3,7 @@ import { Table } from 'antd';
 import { isFunction, isFunctionReturnArray } from '../utils';
 import type { LabeledValue } from 'antd/lib/select';
 import type { DropdownRenderProps, RawValue } from '../types/SelectTable';
-import './style.less';
+import styles from './style.less';
 
 export default function DropdownRender(props: DropdownRenderProps) {
   const {
@@ -19,9 +19,8 @@ export default function DropdownRender(props: DropdownRenderProps) {
     labelInValue,
   } = props;
 
-  const fieldValue = fieldNames?.value || 'value';
-
-  const fieldLabel = fieldNames?.label || 'label';
+  const fieldValue = fieldNames?.value ?? 'value';
+  const fieldLabel = fieldNames?.label ?? 'label';
 
   // 是否存在 fieldNames?.value fieldNames?.label
   const dataIndexTrue = [fieldValue, fieldLabel].every((item) =>
@@ -46,7 +45,7 @@ export default function DropdownRender(props: DropdownRenderProps) {
       (isMultiple && isSelected()) ||
       (!isMultiple && target === ((value as LabeledValue)?.value || value));
     // 添加禁用样式和选中样式
-    const className = `${disabled ? 'disabled ' : ''}${addStyle ? 'ant-table-row-selected' : ''}`;
+    const className = `${disabled && styles.disabled} ${addStyle && 'ant-table-row-selected'}`;
     return className;
   };
 

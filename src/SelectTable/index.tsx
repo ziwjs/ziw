@@ -64,8 +64,8 @@ const SelectTable = ({
     if (isMode) {
       if (labelInValue) {
         const { value: _value, label } = record;
-        const fieldValue = fieldNames?.value || 'value';
-        const fieldLabel = fieldNames?.label || 'label';
+        const fieldValue = fieldNames?.value ?? 'value';
+        const fieldLabel = fieldNames?.label ?? 'label';
         setValue((value as LabeledValue[])?.filter((item: LabeledValue) => item?.value !== _value));
         isFunction(onChange, { [fieldValue]: _value, [fieldLabel]: label });
       } else {
