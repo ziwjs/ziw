@@ -13,7 +13,7 @@ import {
   InputNumber,
 } from 'antd';
 import SelectTable from '../SelectTable';
-import type { Type, Layout } from '../types/FormPro';
+import type { Type } from '../types/FormPro';
 
 const { TextArea } = Input;
 const RadioGroup = Radio.Group;

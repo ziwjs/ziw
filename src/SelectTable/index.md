@@ -370,3 +370,22 @@ export default () => {
   );
 };
 ```
+
+## API
+
+| 属性名 | 类型 | 默认值 | 描述 |
+| --- | :-: | :-: | :-: |
+| columns | Array | [] | 表格列的设置 |
+| options | Array | [] | 表格数据源 |
+| value | `SelectValue` | - | 选中项的值 |
+| labelInValue | boolean | false | 是否以对象形式返回选中项 |
+| fieldNames | object | {label: 'label', value: 'value'} | 显示字段名称 |
+| loading | boolean | false | 是否加载中 |
+| mode | string | - | 指定选择器模式，可选`multiple`, `tags` |
+| placeholder | string | '请选择' | 未选择时的占位符 |
+| onClear | function | - | 用户清空选项时的回调函数 |
+| onChange | function | - | 选项变化时的回调函数 |
+| onDeselect | function | - | 取消选中选项时的回调函数 |
+| dropdownStyle | object | {} | 下拉列表样式 |
+| onDropdownVisibleChange | function | - | 下拉列表显示/隐藏的回调函数 |
+| 其他属性 | - | - | 参见 [Antd Select](https://ant.design/components/select-cn#select-props) 组件参数 |

@@ -11,7 +11,10 @@ import type { ButtonGroupProps } from '../types/ButtonGroup';
 import { DownOutlined, UpOutlined, ReloadOutlined, ZoomInOutlined } from '@ant-design/icons';
 import styles from './index.less';
 
-const Index = forwardRef((props: FormProProps, ref?: Ref<any>) => {
+type RefWithCurrent<T> = Ref<T> & {
+  current?: T | null;
+};
+const Index = forwardRef((props: FormProProps, ref?: RefWithCurrent<any> | null) => {
   const {
     onReset,
     onSubmit,

@@ -1,37 +1,34 @@
 import React, { useState } from 'react';
 import { Select } from 'antd';
 import DropdownRender from './dropdownRender';
-import type { SelectValue } from 'antd/lib/select';
-import type { SelectTableProps, DropdownRenderProps } from '../types/SelectTable';
+import type { SelectValue, LabeledValue } from 'antd/lib/select';
+import type { SelectTableProps, DropdownRenderProps, RawValue } from '../types/SelectTable';
 import { isFunction, isFunctionReturnArray } from '../utils';
 
-const SelectTable = (props: SelectTableProps) => {
-  const {
-    mode,
-    loading,
-    onClear,
-    onChange,
-    onDeselect,
-    columns = [],
-    options = [],
-    value: _value,
-    dropdownStyle,
-    labelInValue = false,
-    placeholder = '请选择',
-    onDropdownVisibleChange,
-    fieldNames = { label: 'label', value: 'value' },
-    ...otherPrors
-  } = props;
+const SelectTable = ({
+  mode,
+  loading,
+  onClear,
+  onChange,
+  onDeselect,
+  columns = [],
+  options = [],
+  value: _value,
+  dropdownStyle,
+  open: _open = false,
+  labelInValue = false,
+  placeholder = '请选择',
+  onDropdownVisibleChange,
+  fieldNames = { label: 'label', value: 'value' },
+  ...otherPrors
+}: SelectTableProps) => {
+  const [open, setOpen] = useState<boolean>(_open);
 
-  // 控制下拉框的显示
-  let [open, setOpen] = useState(false);
+  const [value, setValue] = useState<SelectValue>(_value);
 
-  // 控制输入框的值
-  let [value, setValue] = useState(_value) as [SelectValue, (value: SelectValue) => void];
+  const isMode: boolean = ['multiple', 'tags'].includes(mode || '');
 
-  // DropdownRender props
   const dropdownRenderProps: DropdownRenderProps = {
-    mode,
     value,
     setOpen,
     loading,
@@ -39,16 +36,13 @@ const SelectTable = (props: SelectTableProps) => {
     setValue,
     fieldNames,
     labelInValue,
+    isMultiple: isMode,
     columns: isFunctionReturnArray(columns),
     dataSource: isFunctionReturnArray(options),
   };
 
-  // 是否多选
-  const isMode = ['multiple', 'tags'].includes(mode || '');
-
-  // 清除内容时回调
   const myOnClear = () => {
-    const clerar = setTimeout(() => {
+    const timerId = setTimeout(() => {
       if (isMode) {
         setValue([]);
         isFunction(onChange, [], []);
@@ -58,32 +52,30 @@ const SelectTable = (props: SelectTableProps) => {
       }
       isFunction(onClear);
     }, 0);
-    return () => clearTimeout(clerar);
+    return () => clearTimeout(timerId);
   };
 
-  // 展开下拉菜单的回调
   const myOnDropdownVisibleChange = (open: boolean) => {
     setOpen(open);
     isFunction(onDropdownVisibleChange, open);
   };
 
-  // 取消选中时调用，参数为选中项的 value (或 key) 值，仅在 multiple 或 tags 模式下生效
   const myOnDeselect = (record: any) => {
     if (isMode) {
       if (labelInValue) {
         const { value: _value, label } = record;
-        Array.isArray(value) && value.filter;
-        setValue(value?.filter((item: SelectValue) => item?.value !== _value));
-        isFunction(onChange, { [fieldNames?.value]: _value, [fieldNames?.label]: label });
+        const fieldValue = fieldNames?.value || 'value';
+        const fieldLabel = fieldNames?.label || 'label';
+        setValue((value as LabeledValue[])?.filter((item: LabeledValue) => item?.value !== _value));
+        isFunction(onChange, { [fieldValue]: _value, [fieldLabel]: label });
       } else {
-        setValue(value.filter((item: string | number) => item !== record));
+        setValue((value as RawValue[])?.filter((item: RawValue) => item !== record));
         isFunction(onChange, record);
       }
     }
     isFunction(onDeselect, record);
   };
 
-  // Select props
   const payload = {
     mode,
     value,

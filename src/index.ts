@@ -3,8 +3,11 @@ export { default as ButtonGroup } from './ButtonGroup';
 export type { ButtonGroupProps, Size, CustomButtonProps } from './types/ButtonGroup';
 // 数据录入
 export { default as FormPro } from './FormPro';
+export type { Type, Column, FormProProps } from './types/FormPro';
+
 export { default as District } from './District';
 export { default as SelectTable } from './SelectTable';
+export type { SelectTableProps } from './types/SelectTable';
 
 // 数据展示
 export { default as Details } from './Details';

@@ -218,7 +218,7 @@ export default () => {
 
 ## API
 
-| 参数 | 说明 | 类型 | 默认值 |
+| 属性名 | 说明 | 类型 | 默认值 |
 | --- | --- | --- | --- |
 | columns | 表格列的配置项 | ColumnItem[] | [] |
 | dataSource | 表格数据源 | Record<string, any> | {} |
@@ -229,9 +229,9 @@ export default () => {
 
 表格列的配置项，可以继承 Antd DescriptionsItemProps 接口，同时支持以下属性：
 
-| 参数 | 说明 | 类型 |
-| --- | --- | --- | --- |
+| 属性名 | 说明 | 类型 |
+| --- | --- | --- |
 | key | 列的唯一标识符 | string \| number |
 | label | 列的标题，可以是字符串或者函数类型 | string \| (() => ReactNode) |
 | render | 自定义渲染该列的单元格内容的方法，可以是函数或者组件类型 | (value: any, record: object) => ReactNode |
-| 其他参数 | 参见 [Antd Descriptions](https://ant.design/components/descriptions-cn#descriptionitem) 组件参数 | - | - |
+| 其他参数 | 参见 [Antd Descriptions](https://ant.design/components/descriptions-cn#descriptionitem) 组件参数 | - |

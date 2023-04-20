@@ -1,99 +1,79 @@
 import React, { useState, useEffect } from 'react';
 import { Table } from 'antd';
-import { DropdownRenderProps } from '../types/SelectTable';
 import { isFunction, isFunctionReturnArray } from '../utils';
+import type { LabeledValue } from 'antd/lib/select';
+import type { DropdownRenderProps, RawValue } from '../types/SelectTable';
 import './style.less';
 
 export default function DropdownRender(props: DropdownRenderProps) {
   const {
-    mode,
     value,
     columns,
     setOpen,
     loading,
     setValue,
     onChange,
+    isMultiple,
     dataSource,
     fieldNames,
     labelInValue,
   } = props;
 
-  // columns 是否存在 fieldNames?.value fieldNames?.label
-  const dataIndexTrue = [fieldNames?.value, fieldNames?.label].every((item) =>
-    columns.map((item: any) => item.dataIndex).includes(item),
+  const fieldValue = fieldNames?.value || 'value';
+
+  const fieldLabel = fieldNames?.label || 'label';
+
+  // 是否存在 fieldNames?.value fieldNames?.label
+  const dataIndexTrue = [fieldValue, fieldLabel].every((item) =>
+    columns?.map((item: any) => item.dataIndex).includes(item),
   );
 
-  // 多选存储选中的值
-  let [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  let [selectedRowKeys, setSelectedRowKeys] = useState<LabeledValue[] | RawValue[]>([]);
 
   useEffect(() => {
     setSelectedRowKeys(isFunctionReturnArray(value));
   }, [value]);
 
-  // 选择模式 多选
-  const isMultiple = ['multiple', 'tags'].includes(mode || '');
-
-  // 添加样式
   const rowClassName = (record: any) => {
     if (!dataIndexTrue) return '';
-    //  添加选中样式
-    let styleStr = '';
-    const { [fieldNames?.value]: _value, disabled = false } = record;
-    // 禁用样式
-    if (disabled) styleStr += 'disabled ';
-    // 添加样式
-    let addStyle = false;
-    if (isMultiple) {
-      // 开启 { value: string, label: ReactNode } 的格式
-      if (labelInValue) addStyle = selectedRowKeys.find((item) => item?.value === _value) || false;
-      // 未开启 { value: string, label: ReactNode } 的格式
-      else addStyle = selectedRowKeys.find((item) => item === _value) || false;
-    } else
-      addStyle = (_value && (value?.value || value) && _value === (value?.value || value)) || false;
-    addStyle ? (styleStr += 'ant-table-row-selected') : styleStr;
-    return styleStr;
+    const { [fieldValue]: target = '', disabled = false } = record;
+    const isSelected = () => {
+      return selectedRowKeys.some((item: LabeledValue | RawValue) =>
+        labelInValue ? item && (item as LabeledValue).value === target : item === target,
+      );
+    };
+    const addStyle =
+      (isMultiple && isSelected()) ||
+      (!isMultiple && target === ((value as LabeledValue)?.value || value));
+    // 添加禁用样式和选中样式
+    const className = `${disabled ? 'disabled ' : ''}${addStyle ? 'ant-table-row-selected' : ''}`;
+    return className;
   };
 
-  // 点击table列
   const onRow = (record: any) => {
-    const { [fieldNames?.value]: value, [fieldNames?.label]: label, disabled = false } = record;
-    // 禁用不可点击
+    const { [fieldValue]: value, [fieldLabel]: label, disabled = false } = record;
+
     if (disabled) return;
-    // 选择模式 多选
+
+    // 处理多选逻辑
     if (isMultiple) {
-      let _selectedRowKeys = [...selectedRowKeys];
-      // labelInValue : 是否开启 object 模式
-      if (labelInValue) {
-        const isSelect = _selectedRowKeys.find((item) => item?.value === value);
-        // 未选中进行添加
-        if (!isSelect) _selectedRowKeys.push({ value, label });
-        // 已选中进行删除
-        else _selectedRowKeys = _selectedRowKeys.filter((item) => item?.value !== value);
-        // 传递数据
-        const payload = _selectedRowKeys.map(() => {
-          return {
-            [fieldNames?.value]: value,
-            [fieldNames?.label]: label,
-          };
-        });
-        isFunction(onChange, payload, record);
-      } else {
-        // 未选中进行添加
-        if (!_selectedRowKeys.find((item) => item === value)) _selectedRowKeys.push(value);
-        // 已选中进行删除
-        else _selectedRowKeys = _selectedRowKeys.filter((item) => item !== value);
-        isFunction(onChange, _selectedRowKeys, record);
-      }
-      // 更新选中的值
-      setSelectedRowKeys(_selectedRowKeys);
-      setValue(_selectedRowKeys);
+      const isSelect = selectedRowKeys.some((item: LabeledValue | RawValue) =>
+        labelInValue ? item && (item as LabeledValue).value === value : item === value,
+      );
+      const nextSelectedRowKeys = isSelect
+        ? (selectedRowKeys as LabeledValue[])?.filter((item: LabeledValue) =>
+            labelInValue ? item?.value !== value : item !== value,
+          )
+        : [...selectedRowKeys, labelInValue ? { value, label } : value];
+      setSelectedRowKeys(nextSelectedRowKeys);
+      setValue(nextSelectedRowKeys);
+      isFunction(onChange, nextSelectedRowKeys, record);
       return;
     }
-    // 选择模式 单选
-    labelInValue ? setValue({ value, label }) : setValue(value);
-    const payload = labelInValue
-      ? { [fieldNames?.value]: value, [fieldNames?.label]: label }
-      : value;
+
+    // 处理单选逻辑
+    const payload = labelInValue ? { value, label } : value;
+    setValue(payload);
     isFunction(onChange, payload, record);
     setOpen(false);
   };
@@ -104,15 +84,11 @@ export default function DropdownRender(props: DropdownRenderProps) {
       loading={loading}
       columns={columns}
       pagination={false}
+      rowKey={fieldValue}
       scroll={{ x: 'max-content', y: 250 }}
-      rowKey={fieldNames?.value?.toString()}
       dataSource={dataIndexTrue ? dataSource : []}
       rowClassName={(record) => rowClassName(record)}
-      onRow={(record) => {
-        return {
-          onClick: () => onRow(record),
-        };
-      }}
+      onRow={(record) => ({ onClick: () => onRow(record) })}
     />
   );
 }
