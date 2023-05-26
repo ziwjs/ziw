@@ -32,7 +32,8 @@
   "dependencies": {
     "antd": "4.23.5",
     "babel-plugin-import": "1.13.5",
-    "react": "18.0.0"
+    "react": "18.0.0",
+    "react-resizable": "^3.0.5"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.15.1",
