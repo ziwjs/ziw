@@ -18,14 +18,39 @@ export default () => (
       {
         title: 'Column 1',
         dataIndex: 'column1',
-      },
-      {
-        title: 'Column 2',
-        dataIndex: 'column2',
+        width: 200,
+        ellipsis: true,
       },
       {
         title: 'Column 3',
         dataIndex: 'column3',
+        width: 200,
+        ellipsis: true,
+      },
+      {
+        title: 'Column 5',
+        dataIndex: 'column5',
+        width: 300,
+        ellipsis: true,
+      },
+      {
+        title: 'Column 7',
+        dataIndex: 'column7',
+        width: 300,
+        ellipsis: true,
+      },
+      {
+        title: 'Column 8',
+        dataIndex: 'column8',
+        width: 300,
+        ellipsis: true,
+      },
+      {
+        title: 'Column 6',
+        dataIndex: 'column6',
+        ellipsis: true,
+        width: 200,
+        fixed: 'right',
       },
     ]}
     dataSource={[
@@ -34,6 +59,7 @@ export default () => (
         column1: 'value1',
         column2: 'value2',
         column3: 'value3',
+        column4: 'value4',
       },
       {
         key: '2',

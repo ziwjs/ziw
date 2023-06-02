@@ -1,65 +1,84 @@
-import React, { useState, useEffect, SyntheticEvent, FC } from 'react';
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { Table } from 'antd';
-import { Resizable, ResizeCallbackData } from 'react-resizable';
-import type { ArgTableProps } from '../types/ArgTable';
-import './style.css';
-
-interface ResizeableTitleProps extends ResizeCallbackData {
-  index: number;
-  width: number;
-  onResize: (event: SyntheticEvent, data: ResizeCallbackData) => void;
-}
-
-const ResizeableTitle: FC<ResizeableTitleProps> = ({
-  width = 100,
-  onResize,
-  index,
-  ...restProps
-}) => {
-  return (
-    <Resizable
-      width={width}
-      height={0}
-      onResize={onResize}
-      draggableOpts={{ axis: 'x' }}
-      minConstraints={[100, 100]}
-    >
-      <th {...restProps} />
-    </Resizable>
-  );
-};
+import type { ArgTableProps, ColumnItem } from '../types/ArgTable';
+import type { ResizeCallbackData } from 'react-resizable';
+import ResizeableTitle from './ResizeableTitle';
+import { handleWidth } from './utils';
+import './style.less';
 
 const ArgTable = <T extends object>({
   dataSource = [],
   columns = [],
   ...restProps
 }: ArgTableProps<T>) => {
-  const [dcolumns, setDcolumns] = useState(columns);
+  const devRef = useRef<HTMLDivElement>(null);
+  const [dcolumns, setDcolumns] = useState([]);
 
   useEffect(() => {
-    setDcolumns(columns);
-  }, [columns]);
+    if (columns.length === 0) setDcolumns([]);
+    else {
+      const updatedColumns = columns.map((col) => {
+        const width = handleWidth(col?.width || '0%');
+        return { ...col, width: typeof width === 'number' ? (width >= 50 ? width : 50) : width };
+      });
 
-  const components = { header: { cell: ResizeableTitle } };
+      const devWidth = devRef.current?.clientWidth || 0;
+      const notPercentColumns = updatedColumns.filter((col) => typeof col.width === 'number');
+      const percentWidth = notPercentColumns.reduce((acc, cur) => acc + (cur.width as number), 0);
+      const percentColumns = updatedColumns.filter((col) => typeof col.width === 'string');
+      const shouldSetPercentWidth =
+        percentColumns.length && devWidth >= percentWidth + percentColumns.length * 80;
 
-  const handleResize =
+      const newColumns = updatedColumns.map((col) => {
+        if (typeof col.width === 'string')
+          return {
+            ...col,
+            width: shouldSetPercentWidth ? (devWidth - percentWidth) / percentColumns.length : 80,
+          };
+        return col;
+      });
+      setDcolumns(newColumns as any);
+    }
+  }, []);
+
+  const handleResize = useCallback(
     (index: number) =>
-    (_: SyntheticEvent, { size }: ResizeCallbackData) => {
-      const nextColumns = [...dcolumns];
-      nextColumns[index] = { ...nextColumns[index], width: size.width };
-      setDcolumns(nextColumns);
-    };
+      (_: any, { size }: ResizeCallbackData) => {
+        const curWidth = size.width;
+        const curMinWidth = dcolumns[index]?.minWidth ?? 50;
+        const curMaxWidth = dcolumns[index]?.maxWidth ?? Infinity;
+        if (curWidth < curMinWidth || curWidth > curMaxWidth) return;
+        setDcolumns((oldColumns) => {
+          const newColumns: any = [...oldColumns];
+          newColumns[index] = { ...newColumns[index], width: curWidth };
+          return newColumns;
+        });
+      },
+    [dcolumns],
+  );
 
-  const _columns: any = dcolumns.map((col, index) => ({
-    ...col,
-    onHeaderCell: () => ({
-      width: col.width || 100,
-      onResize: handleResize(index),
-    }),
-  }));
+  const _columns = useMemo(() => {
+    return dcolumns.map((col: ColumnItem, index) => ({
+      ...col,
+      onHeaderCell: () => ({
+        width: col.width,
+        onResize: handleResize(index),
+      }),
+    }));
+  }, [dcolumns, handleResize]);
+
+  const components = useMemo(() => ({ header: { cell: ResizeableTitle } }), []);
 
   return (
-    <Table columns={_columns} components={components} dataSource={dataSource} {...restProps} />
+    <div style={{ width: '100%' }} ref={devRef}>
+      <Table
+        {...restProps}
+        columns={_columns}
+        components={components}
+        dataSource={dataSource}
+        style={{ width: _columns.reduce((acc: number, cur: any) => acc + cur.width, 0) }}
+      />
+    </div>
   );
 };
 
